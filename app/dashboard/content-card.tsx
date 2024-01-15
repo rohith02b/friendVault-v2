@@ -1,10 +1,8 @@
 import * as React from 'react';
 
-import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -18,14 +16,12 @@ const ContentCard = () => {
           <CardTitle>Groups</CardTitle>
         </CardHeader>
         <CardContent>1</CardContent>
-        <CardFooter className=''></CardFooter>
       </Card>
       <Card>
         <CardHeader>
           <CardTitle>Files</CardTitle>
         </CardHeader>
         <CardContent>2</CardContent>
-        <CardFooter className=''></CardFooter>
       </Card>
     </div>
   );

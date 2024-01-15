@@ -5,18 +5,21 @@ import React from 'react';
 import prisma from '@/lib/dbConnect';
 import CreateGroup from '@/components/dashboard/CreateGroup';
 import JoinGroup from '@/components/dashboard/JoinGroup';
+import GroupCard from '@/components/dashboard/GroupCard';
 
 export default async function Groups() {
   const { getUser } = getKindeServerSession();
   const user = await getUser();
 
   const groups = await prisma.groups.findMany({
-    // where: {
-    //   members: {
-    //     has: user?.id,
-    //   },
-    // },
+    where: {
+      members: {
+        has: user?.id,
+      },
+    },
   });
+
+  await prisma.$disconnect();
 
   return (
     <div>
@@ -26,15 +29,19 @@ export default async function Groups() {
         </h3>
         <div className='flex gap-6'>
           <CreateGroup />
-          <JoinGroup />
+          <JoinGroup groups={groups} />
         </div>
       </div>
       {groups.length ? (
-        <>
+        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-12'>
           {groups?.map((each: any) => {
-            return <div className='mt-5' key={each.id}></div>;
+            return (
+              <div className='mt-5' key={each.id}>
+                <GroupCard Group={each} />
+              </div>
+            );
           })}
-        </>
+        </div>
       ) : (
         <></>
       )}

@@ -1,7 +1,9 @@
 'use client';
 
+import { toast } from 'sonner';
 import SideBar from '../common/SideBar';
 import ChangeTheme from '../common/changeTheme';
+import { Toaster } from 'sonner';
 
 export default function DashboardLayout({ children }: any) {
   return (
@@ -21,6 +23,8 @@ export default function DashboardLayout({ children }: any) {
           </div>
         </footer>
       </div>
+
+      <Toaster />
     </div>
   );
 }

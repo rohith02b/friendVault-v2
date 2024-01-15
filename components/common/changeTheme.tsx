@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-const changeTheme = () => {
+const ChangeTheme = () => {
   const { setTheme } = useTheme();
 
   return (
@@ -39,4 +39,4 @@ const changeTheme = () => {
   );
 };
 
-export default changeTheme;
+export default ChangeTheme;

@@ -24,8 +24,9 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import axios from 'axios';
+import { Toaster, toast } from 'sonner';
 
-export default function JoinGroup() {
+export default function JoinGroup({ groups }: any) {
   const [open, setOpen] = React.useState(false);
   const [isDesktop, setIsDesktop] = React.useState<boolean | undefined>();
 
@@ -55,12 +56,12 @@ export default function JoinGroup() {
         </DialogTrigger>
         <DialogContent className='sm:max-w-[425px]'>
           <DialogHeader>
-            <DialogTitle>Join Group</DialogTitle>
+            <DialogTitle>Join group</DialogTitle>
             <DialogDescription>
               Join an existing group to share files with your group
             </DialogDescription>
           </DialogHeader>
-          <ProfileForm setOpen={setOpen} />
+          <ProfileForm setOpen={setOpen} groups={groups} />
         </DialogContent>
       </Dialog>
     );
@@ -78,7 +79,7 @@ export default function JoinGroup() {
             Join an existing group to share files with your group
           </DrawerDescription>
         </DrawerHeader>
-        <ProfileForm setOpen={setOpen} className='px-4' />
+        <ProfileForm setOpen={setOpen} groups={groups} className='px-4' />
 
         <DrawerFooter className=''>
           <DrawerClose asChild></DrawerClose>
@@ -88,7 +89,7 @@ export default function JoinGroup() {
   );
 }
 
-function ProfileForm({ className, setOpen }: any) {
+function ProfileForm({ className, setOpen, groups }: any) {
   const [code, setCode] = React.useState('');
 
   const handleChange = (e: any) => {
@@ -97,10 +98,28 @@ function ProfileForm({ className, setOpen }: any) {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    axios.put('/api/groups/join', {
-      code: code,
+    let userInGroupCodeAlready = false;
+
+    groups?.map((each: any) => {
+      if (each.code === code) userInGroupCodeAlready = true;
     });
-    setOpen(false);
+
+    if (userInGroupCodeAlready) {
+      toast.error('You are already in this group');
+      return;
+    }
+
+    axios
+      .put('/api/groups/join', {
+        code: code,
+      })
+      .then((response: any) => {
+        toast.success(response?.data);
+        setOpen(false);
+      })
+      .catch(() => {
+        toast.error('The following code does not exist');
+      });
   };
   return (
     <form
@@ -111,8 +130,8 @@ function ProfileForm({ className, setOpen }: any) {
         <Label htmlFor='Code'>Code</Label>
         <Input id='Code' value={code} onChange={handleChange} defaultValue='' />
       </div>
-      <Button variant='outline' className='mt-2' type='submit'>
-        Save
+      <Button className='mt-2' type='submit'>
+        Save{' '}
       </Button>
     </form>
   );

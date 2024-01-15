@@ -23,6 +23,9 @@ import {
 } from '@/components/ui/drawer';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Toaster } from '../ui/sonner';
+import axios from 'axios';
+import { toast } from 'sonner';
 
 export default function CreateGroup() {
   const [open, setOpen] = React.useState(false);
@@ -54,12 +57,13 @@ export default function CreateGroup() {
         </DialogTrigger>
         <DialogContent className='sm:max-w-[425px]'>
           <DialogHeader>
-            <DialogTitle>Edit profile</DialogTitle>
+            <DialogTitle>Create a Group</DialogTitle>
             <DialogDescription>
-              Make changes to your profile here. Click save when you're done.
+              Share files amongst your group.Remember the code to share it so
+              your friends can join.
             </DialogDescription>
           </DialogHeader>
-          <ProfileForm />
+          <ProfileForm setOpen={setOpen} />
         </DialogContent>
       </Dialog>
     );
@@ -68,16 +72,17 @@ export default function CreateGroup() {
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
-        <Button variant='outline'>Edit Profile</Button>
+        <Button variant='outline'>Create a Group</Button>
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className='text-left'>
-          <DrawerTitle>Edit profile</DrawerTitle>
+          <DrawerTitle>Create a Group</DrawerTitle>
           <DrawerDescription>
-            Make changes to your profile here. Click save when you're done.
+            Share files amongst your group.Remember the code to share it so your
+            friends can join.
           </DrawerDescription>
         </DrawerHeader>
-        <ProfileForm className='px-4' />
+        <ProfileForm className='px-4' setOpen={setOpen} />
         <DrawerFooter className='pt-2'>
           <DrawerClose asChild>
             <Button variant='outline'>Cancel</Button>
@@ -88,16 +93,57 @@ export default function CreateGroup() {
   );
 }
 
-function ProfileForm({ className }: React.ComponentProps<'form'>) {
+function ProfileForm({ className, setOpen }: any) {
+  const [formData, setFormData] = React.useState({
+    name: '',
+    code: '',
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData: any) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    axios
+      .post('/api/groups/create', formData)
+      .then((response: any) => {
+        toast.success(response?.data);
+        setOpen(false);
+      })
+      .catch(() => {
+        toast.error('An error occurred');
+      });
+  };
+
   return (
-    <form className={cn('grid items-start gap-4', className)}>
+    <form
+      className={cn('grid items-start gap-4', className)}
+      onSubmit={handleSubmit}
+    >
       <div className='grid gap-2'>
-        <Label htmlFor='email'>Email</Label>
-        <Input type='email' id='email' defaultValue='shadcn@example.com' />
+        <Label htmlFor='name'>Name</Label>
+        <Input
+          type='text'
+          id='name'
+          name='name'
+          value={formData.name}
+          onChange={handleChange}
+        />
       </div>
       <div className='grid gap-2'>
-        <Label htmlFor='username'>Username</Label>
-        <Input id='username' defaultValue='@shadcn' />
+        <Label htmlFor='code'>Code</Label>
+        <Input
+          type='text'
+          id='code'
+          name='code'
+          value={formData.code}
+          onChange={handleChange}
+        />
       </div>
       <Button type='submit'>Save changes</Button>
     </form>
