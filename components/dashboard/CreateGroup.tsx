@@ -53,7 +53,9 @@ export default function CreateGroup() {
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button variant='outline'>Create Group</Button>
+          <Button variant='outline' size='lg'>
+            Create Group
+          </Button>
         </DialogTrigger>
         <DialogContent className='sm:max-w-[425px]'>
           <DialogHeader>

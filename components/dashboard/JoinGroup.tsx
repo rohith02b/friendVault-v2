@@ -52,7 +52,9 @@ export default function JoinGroup({ groups }: any) {
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button variant='outline'>Join Group</Button>
+          <Button variant='outline' size='lg'>
+            Join Group
+          </Button>
         </DialogTrigger>
         <DialogContent className='sm:max-w-[425px]'>
           <DialogHeader>

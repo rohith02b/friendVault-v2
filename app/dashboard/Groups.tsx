@@ -33,7 +33,7 @@ export default async function Groups() {
         </div>
       </div>
       {groups.length ? (
-        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-12'>
+        <div className='mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-12'>
           {groups?.map((each: any) => {
             return (
               <div className='mt-5' key={each.id}>

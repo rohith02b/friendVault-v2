@@ -10,7 +10,7 @@ import {
 
 const ContentCard = () => {
   return (
-    <div className='grid md:grid-cols-3 grid-cols-1 gap-12 my-12'>
+    <div className=' grid md:grid-cols-3 grid-cols-1 gap-12 my-12'>
       <Card>
         <CardHeader>
           <CardTitle>Groups</CardTitle>
