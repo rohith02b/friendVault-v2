@@ -26,7 +26,7 @@ import { Label } from '@/components/ui/label';
 import axios from 'axios';
 import { Toaster, toast } from 'sonner';
 
-export default function JoinGroup({ groups }: any) {
+export default function JoinGroup({ groups, fetchGroups }: any) {
   const [open, setOpen] = React.useState(false);
   const [isDesktop, setIsDesktop] = React.useState<boolean | undefined>();
 
@@ -52,9 +52,7 @@ export default function JoinGroup({ groups }: any) {
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button variant='outline' size='lg'>
-            Join Group
-          </Button>
+          <Button>Join Group</Button>
         </DialogTrigger>
         <DialogContent className='sm:max-w-[425px]'>
           <DialogHeader>
@@ -63,7 +61,11 @@ export default function JoinGroup({ groups }: any) {
               Join an existing group to share files with your group
             </DialogDescription>
           </DialogHeader>
-          <ProfileForm setOpen={setOpen} groups={groups} />
+          <ProfileForm
+            setOpen={setOpen}
+            groups={groups}
+            fetchGroups={fetchGroups}
+          />
         </DialogContent>
       </Dialog>
     );
@@ -72,7 +74,7 @@ export default function JoinGroup({ groups }: any) {
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
-        <Button variant='outline'>Join Group</Button>
+        <Button>Join Group</Button>
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className='text-left'>
@@ -81,7 +83,12 @@ export default function JoinGroup({ groups }: any) {
             Join an existing group to share files with your group
           </DrawerDescription>
         </DrawerHeader>
-        <ProfileForm setOpen={setOpen} groups={groups} className='px-4' />
+        <ProfileForm
+          setOpen={setOpen}
+          groups={groups}
+          fetchGroups={fetchGroups}
+          className='px-4'
+        />
 
         <DrawerFooter className=''>
           <DrawerClose asChild></DrawerClose>
@@ -91,7 +98,7 @@ export default function JoinGroup({ groups }: any) {
   );
 }
 
-function ProfileForm({ className, setOpen, groups }: any) {
+function ProfileForm({ className, setOpen, groups, fetchGroups }: any) {
   const [code, setCode] = React.useState('');
 
   const handleChange = (e: any) => {
@@ -118,6 +125,7 @@ function ProfileForm({ className, setOpen, groups }: any) {
       .then((response: any) => {
         toast.success(response?.data);
         setOpen(false);
+        fetchGroups();
       })
       .catch(() => {
         toast.error('The following code does not exist');

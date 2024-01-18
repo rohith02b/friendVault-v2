@@ -23,11 +23,10 @@ import {
 } from '@/components/ui/drawer';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Toaster } from '../ui/sonner';
 import axios from 'axios';
 import { toast } from 'sonner';
 
-export default function CreateGroup() {
+export default function CreateGroup({ fetchGroups }: any) {
   const [open, setOpen] = React.useState(false);
   const [isDesktop, setIsDesktop] = React.useState<boolean | undefined>();
 
@@ -53,9 +52,7 @@ export default function CreateGroup() {
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button variant='outline' size='lg'>
-            Create Group
-          </Button>
+          <Button>Create Group</Button>
         </DialogTrigger>
         <DialogContent className='sm:max-w-[425px]'>
           <DialogHeader>
@@ -65,7 +62,7 @@ export default function CreateGroup() {
               your friends can join.
             </DialogDescription>
           </DialogHeader>
-          <ProfileForm setOpen={setOpen} />
+          <ProfileForm setOpen={setOpen} fetchGroups={fetchGroups} />
         </DialogContent>
       </Dialog>
     );
@@ -74,17 +71,21 @@ export default function CreateGroup() {
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
-        <Button variant='outline'>Create a Group</Button>
+        <Button>Create Group</Button>
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className='text-left'>
-          <DrawerTitle>Create a Group</DrawerTitle>
+          <DrawerTitle>Create Group</DrawerTitle>
           <DrawerDescription>
             Share files amongst your group.Remember the code to share it so your
             friends can join.
           </DrawerDescription>
         </DrawerHeader>
-        <ProfileForm className='px-4' setOpen={setOpen} />
+        <ProfileForm
+          className='px-4'
+          setOpen={setOpen}
+          fetchGroups={fetchGroups}
+        />
         <DrawerFooter className='pt-2'>
           <DrawerClose asChild>
             <Button variant='outline'>Cancel</Button>
@@ -95,7 +96,7 @@ export default function CreateGroup() {
   );
 }
 
-function ProfileForm({ className, setOpen }: any) {
+function ProfileForm({ className, setOpen, fetchGroups }: any) {
   const [formData, setFormData] = React.useState({
     name: '',
     code: '',
@@ -116,6 +117,7 @@ function ProfileForm({ className, setOpen }: any) {
       .then((response: any) => {
         toast.success(response?.data);
         setOpen(false);
+        fetchGroups();
       })
       .catch(() => {
         toast.error('An error occurred');
