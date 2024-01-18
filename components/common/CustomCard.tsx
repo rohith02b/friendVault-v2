@@ -6,13 +6,13 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import Image from 'next/image';
 import { IconUsersGroup } from '@tabler/icons-react';
 import Link from 'next/link';
+import { CustomCard } from '@/types/CustomCard';
 
-const GroupCard = ({ Group }: any) => {
+const GroupCard = ({ content_type, content }: CustomCard) => {
   return (
-    <Link href={`/groups/${Group.id}`}>
+    <Link href={`/groups/${content.id}`}>
       <Card
         style={{
           cursor: 'pointer',
@@ -28,7 +28,7 @@ const GroupCard = ({ Group }: any) => {
             />
           </CardTitle>
         </CardHeader>
-        <CardContent>{Group.name}</CardContent>
+        <CardContent>{content.name}</CardContent>
       </Card>
     </Link>
   );

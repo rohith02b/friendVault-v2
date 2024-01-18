@@ -3,18 +3,19 @@
 import React, { useEffect, useState } from 'react';
 import CreateGroup from '@/components/dashboard/CreateGroup';
 import JoinGroup from '@/components/dashboard/JoinGroup';
-import GroupCard from '@/components/dashboard/GroupCard';
+import GroupCard from '@/components/common/CustomCard';
 import NoGroups from '@/components/dashboard/NoGroups';
 import axios from 'axios';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Groups } from '@/types/Groups';
 
 export default function Groups() {
-  const [groups, setGroups] = useState([]);
+  const [groups, setGroups] = useState<Groups[]>();
   const [loading, setLoading] = useState(true);
 
   const fetchGroups = async () => {
     try {
-      const response = await axios.get('/api/groups');
+      const response: any = await axios.get('/api/groups');
       setGroups(response?.data);
       setLoading(false);
     } catch (error) {
@@ -53,11 +54,11 @@ export default function Groups() {
         </div>
       ) : (
         <>
-          {groups.length ? (
+          {groups && groups.length ? (
             <div className='mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-12'>
-              {groups.map((group: any) => (
+              {groups.map((group: Groups) => (
                 <div className='mt-5' key={group.id}>
-                  <GroupCard Group={group} />
+                  <GroupCard content_type='group' content={group} />
                 </div>
               ))}
             </div>
