@@ -1,16 +1,17 @@
+'use server';
+
 import DashboardLayout from '@/components/layouts/DashboardLayout';
 import Folders from './Folders';
 import Files from './Files';
 
-export default function Page({ params }: { params: { slug: string[] } }) {
-  let url = params.slug;
-  const groupId = url.shift();
-  const path = url.join('/');
+export default async function Page({ params }: { params: { slug: string[] } }) {
+  const groupId = params.slug.shift();
+  const path = params.slug.join('/');
 
   return (
     <DashboardLayout>
-      <Folders />
-      <Files />
+      <Folders groupId={groupId} path={path} />
+      <Files groupId={groupId} path={path} />
     </DashboardLayout>
   );
 }

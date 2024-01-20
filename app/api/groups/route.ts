@@ -1,4 +1,4 @@
-import prisma from '@/lib/dbConnect';
+import prisma from '@/lib/prisma';
 import { Groups } from '@/types/Groups';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import { NextResponse } from 'next/server';

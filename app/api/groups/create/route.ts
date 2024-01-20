@@ -1,6 +1,6 @@
 'use server';
 
-import prisma from '@/lib/dbConnect';
+import prisma from '@/lib/prisma';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import uniqId from 'generate-unique-id';
 

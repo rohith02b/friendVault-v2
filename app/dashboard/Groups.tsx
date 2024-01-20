@@ -6,7 +6,7 @@ import JoinGroup from '@/components/dashboard/JoinGroup';
 import GroupCard from '@/components/common/CustomCard';
 import NoGroups from '@/components/dashboard/NoGroups';
 import axios from 'axios';
-import { Skeleton } from '@/components/ui/skeleton';
+import { renderSkeletons } from '@/components/common/skeletonCard';
 import { Groups } from '@/types/Groups';
 
 export default function Groups() {
@@ -26,14 +26,6 @@ export default function Groups() {
   useEffect(() => {
     fetchGroups();
   }, []);
-
-  const renderSkeletons = () => {
-    return [1, 2, 3].map((each) => (
-      <div key={each}>
-        <Skeleton className='h-32' />
-      </div>
-    ));
-  };
 
   return (
     <div>

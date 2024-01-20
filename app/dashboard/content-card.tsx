@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import prisma from '@/lib/dbConnect';
+import prisma from '@/lib/prisma';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 
 const ContentCard = async () => {

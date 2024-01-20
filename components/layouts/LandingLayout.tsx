@@ -7,7 +7,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function LandingLayout({ children }: any) {
   const { user, isLoading } = useKindeBrowserClient();
-  console.log(user);
 
   return (
     <div className='px-6 md:max-w-6xl mx-auto'>
