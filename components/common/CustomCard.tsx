@@ -20,6 +20,7 @@ const GroupCard = ({ content_type, content }: CustomCard) => {
     return (
       <Link href={`/groups/${content.id}`}>
         <Card
+          className='hover:-mt-4 hover:mb-4 transition-all duration-300'
           style={{
             cursor: 'pointer',
           }}
@@ -50,6 +51,7 @@ const GroupCard = ({ content_type, content }: CustomCard) => {
         style={{
           cursor: 'pointer',
         }}
+        className='hover:-mt-4 hover:mb-4 transition-all duration-300'
       >
         <CardHeader>
           <CardTitle>
@@ -73,6 +75,7 @@ const GroupCard = ({ content_type, content }: CustomCard) => {
           cursor: 'pointer',
         }}
         onClick={handleClick}
+        className='hover:-mt-4 hover:mb-4 transition-all duration-300'
       >
         <CardHeader>
           <CardTitle>

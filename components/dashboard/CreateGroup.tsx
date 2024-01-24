@@ -23,10 +23,12 @@ import {
 } from '@/components/ui/drawer';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import axios from 'axios';
+import { createGroup } from '@/app/actions';
+import { useFormState, useFormStatus } from 'react-dom';
 import { toast } from 'sonner';
+import { Loader2 } from 'lucide-react';
 
-export default function CreateGroup({ fetchGroups }: any) {
+export default function CreateGroup({}: any) {
   const [open, setOpen] = React.useState(false);
   const [isDesktop, setIsDesktop] = React.useState<boolean | undefined>();
 
@@ -62,7 +64,7 @@ export default function CreateGroup({ fetchGroups }: any) {
               your friends can join.
             </DialogDescription>
           </DialogHeader>
-          <ProfileForm setOpen={setOpen} fetchGroups={fetchGroups} />
+          <ProfileForm setOpen={setOpen} createGroup={createGroup} />
         </DialogContent>
       </Dialog>
     );
@@ -84,7 +86,7 @@ export default function CreateGroup({ fetchGroups }: any) {
         <ProfileForm
           className='px-4'
           setOpen={setOpen}
-          fetchGroups={fetchGroups}
+          createGroup={createGroup}
         />
         <DrawerFooter className='pt-2'>
           <DrawerClose asChild>
@@ -96,60 +98,44 @@ export default function CreateGroup({ fetchGroups }: any) {
   );
 }
 
-function ProfileForm({ className, setOpen, fetchGroups }: any) {
-  const [formData, setFormData] = React.useState({
-    name: '',
-    code: '',
-  });
+function ProfileForm({ className, setOpen, createGroup }: any) {
+  const initialState = {
+    message: '',
+  };
+  const [state, formAction] = useFormState(createGroup, initialState);
+  const [loading, setLoading] = React.useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prevData: any) => ({
-      ...prevData,
-      [name]: value,
-    }));
+  const handleClick = () => {
+    setLoading(true);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    axios
-      .post('/api/groups/create', formData)
-      .then((response: any) => {
-        toast.success(response?.data);
-        setOpen(false);
-        fetchGroups();
-      })
-      .catch(() => {
-        toast.error('An error occurred');
-      });
-  };
+  React.useEffect(() => {
+    if (state.message === 'Successfully created Group') {
+      setOpen(false);
+      toast.success(state.message);
+    } else if (state.message === 'Code already exists.') {
+      toast.error(state.message);
+    }
+    setLoading(false);
+  }, [state]);
 
   return (
     <form
       className={cn('grid items-start gap-4', className)}
-      onSubmit={handleSubmit}
+      action={formAction}
     >
       <div className='grid gap-2'>
         <Label htmlFor='name'>Name</Label>
-        <Input
-          type='text'
-          id='name'
-          name='name'
-          value={formData.name}
-          onChange={handleChange}
-        />
+        <Input type='text' id='name' name='name' required />
       </div>
       <div className='grid gap-2'>
         <Label htmlFor='code'>Code</Label>
-        <Input
-          type='text'
-          id='code'
-          name='code'
-          value={formData.code}
-          onChange={handleChange}
-        />
+        <Input type='text' id='code' name='code' required />
       </div>
-      <Button type='submit'>Save changes</Button>
+      <Button type='submit' onClick={handleClick}>
+        {loading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
+        {loading ? 'Saving changes' : 'Save changes'}
+      </Button>
     </form>
   );
 }

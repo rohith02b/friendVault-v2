@@ -1,31 +1,24 @@
-'use client';
-
-import React, { useEffect, useState } from 'react';
 import CreateGroup from '@/components/dashboard/CreateGroup';
 import JoinGroup from '@/components/dashboard/JoinGroup';
 import GroupCard from '@/components/common/CustomCard';
 import NoGroups from '@/components/dashboard/NoGroups';
-import axios from 'axios';
-import { renderSkeletons } from '@/components/common/skeletonCard';
 import { Groups } from '@/types/Groups';
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
+import prisma from '@/lib/prisma';
 
-export default function Groups() {
-  const [groups, setGroups] = useState<Groups[]>();
-  const [loading, setLoading] = useState(true);
+export default async function Groups() {
+  const { getUser } = getKindeServerSession();
+  const user = await getUser();
 
-  const fetchGroups = async () => {
-    try {
-      const response: any = await axios.get('/api/groups');
-      setGroups(response?.data);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching groups:', error);
-    }
-  };
+  const groups: Groups[] = await prisma.groups.findMany({
+    where: {
+      members: {
+        has: user?.id || '',
+      },
+    },
+  });
 
-  useEffect(() => {
-    fetchGroups();
-  }, []);
+  await prisma.$disconnect();
 
   return (
     <div>
@@ -34,30 +27,21 @@ export default function Groups() {
           Groups
         </h3>
         <div className='flex gap-6'>
-          <CreateGroup fetchGroups={fetchGroups} />
-          <JoinGroup fetchGroups={fetchGroups} groups={groups} />
+          <CreateGroup />
+          <JoinGroup groups={groups} />
         </div>
       </div>
-      {loading ? (
-        <div className='mx-auto mt-12'>
-          <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-12'>
-            {renderSkeletons()}
-          </div>
+
+      {groups && groups.length ? (
+        <div className='mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-12'>
+          {groups.map((group: Groups) => (
+            <div className='mt-5' key={group.id}>
+              <GroupCard content_type='group' content={group} />
+            </div>
+          ))}
         </div>
       ) : (
-        <>
-          {groups && groups.length ? (
-            <div className='mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-12'>
-              {groups.map((group: Groups) => (
-                <div className='mt-5' key={group.id}>
-                  <GroupCard content_type='group' content={group} />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <NoGroups />
-          )}
-        </>
+        <NoGroups />
       )}
     </div>
   );

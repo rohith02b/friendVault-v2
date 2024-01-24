@@ -1,36 +1,29 @@
-'use client';
-
 import Link from 'next/link';
 import ChangeTheme from '../common/changeTheme';
 import { Toaster } from 'sonner';
 import { Button } from '../ui/button';
 import Image from 'next/image';
-import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
-import { Skeleton } from '../ui/skeleton';
-export default function DashboardLayout({ children }: any) {
-  const { isLoading, user } = useKindeBrowserClient();
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
+
+export default async function DashboardLayout({ children }: any) {
+  const { getUser } = getKindeServerSession();
+  const user = await getUser();
+
   return (
     <div>
       <div className='flex flex-col'>
         <div className='w-full xl:max-w-[1500px] mx-auto px-6'>
           <div className='my-6 flex flex-row gap-6  gap-0 justify-between'>
-            {isLoading ? (
-              <div className='flex gap-4 items-center'>
-                <Skeleton className='rounded-full w-[32px] h-[32px]' />
-                <Skeleton className='w-[100px] h-[25px]' />
-              </div>
-            ) : (
-              <div className='flex gap-4 items-center'>
-                <Image
-                  src={user?.picture || ''}
-                  width={32}
-                  height={32}
-                  alt={user?.given_name || ''}
-                  className='rounded-full cursor-pointer'
-                />
-                <div>{user?.given_name}</div>
-              </div>
-            )}
+            <div className='flex gap-4 items-center'>
+              <Image
+                src={user?.picture || ''}
+                width={32}
+                height={32}
+                alt={user?.given_name || ''}
+                className='rounded-full cursor-pointer'
+              />
+              <div>{user?.given_name}</div>
+            </div>
             <Link href='/api/auth/logout' className='mx-0'>
               <Button>Logout</Button>
             </Link>

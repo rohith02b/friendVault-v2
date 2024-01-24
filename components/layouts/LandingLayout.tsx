@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import ChangeTheme from '@/components/common/changeTheme';
-import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
-import { Skeleton } from '@/components/ui/skeleton';
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 
-export default function LandingLayout({ children }: any) {
-  const { user, isLoading } = useKindeBrowserClient();
+export default async function LandingLayout({ children }: any) {
+  const { getUser } = getKindeServerSession();
+  const user = await getUser();
 
   return (
     <div className='px-6 md:max-w-6xl mx-auto'>
@@ -19,18 +18,12 @@ export default function LandingLayout({ children }: any) {
             </Link>
           ) : (
             <>
-              {isLoading ? (
-                <Skeleton className='w-[100px] h-[30px] rounded-md' />
-              ) : (
-                <>
-                  <Link href='/api/auth/login'>
-                    <Button>Sign in</Button>
-                  </Link>
-                  <Link href='/api/auth/register'>
-                    <Button>Sign up</Button>
-                  </Link>
-                </>
-              )}
+              <Link href='/api/auth/login'>
+                <Button>Sign in</Button>
+              </Link>
+              <Link href='/api/auth/register'>
+                <Button>Sign up</Button>
+              </Link>
             </>
           )}
         </div>

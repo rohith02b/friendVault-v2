@@ -1,11 +1,6 @@
-'use client';
-
 import * as React from 'react';
-import Lottie from 'lottie-react';
-import landingAnimation from '@/components/animations/landing.json';
 import MainLayout from '@/components/layouts/LandingLayout';
-import { useEffect, useState } from 'react';
-import { Skeleton } from '@/components/ui/skeleton';
+import LandingAnimation from '@/components/common/LandingAnimation';
 
 const Index = () => {
   return (
@@ -18,8 +13,7 @@ const Index = () => {
           Safely store, share, and cherish memories with friends. Encrypted,
           seamless file storage for your collective experiences and moments.
         </p>
-
-        <Lottie className='md:w-2/3 mx-auto' animationData={landingAnimation} />
+        <LandingAnimation />
       </div>
     </MainLayout>
   );
