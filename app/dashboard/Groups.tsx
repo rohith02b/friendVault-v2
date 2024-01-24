@@ -18,8 +18,6 @@ export default async function Groups() {
     },
   });
 
-  await prisma.$disconnect();
-
   return (
     <div>
       <div className='flex flex-col md:flex-row gap-6 md:gap-0 justify-between'>

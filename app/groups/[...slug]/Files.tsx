@@ -25,8 +25,6 @@ const Files = async ({ groupId, path }: any) => {
     },
   });
 
-  await prisma.$disconnect();
-
   return (
     <div className='mt-8'>
       <div className='flex flex-col md:flex-row gap-6 md:gap-0 justify-between'>

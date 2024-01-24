@@ -42,7 +42,6 @@ export async function createGroup(
       members: [user?.id || ''],
     },
   });
-  await prisma.$disconnect();
 
   revalidatePath('/dashboard');
   return { message: 'Successfully created Group' };
@@ -86,7 +85,6 @@ export async function joinGroup(
     return { message: 'Group does not exist' };
   }
 
-  await prisma.$disconnect();
   revalidatePath('/dashboard');
   return { message: 'Successfully joined Group' };
 }
