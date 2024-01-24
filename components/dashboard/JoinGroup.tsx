@@ -23,10 +23,12 @@ import {
 } from '@/components/ui/drawer';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import axios from 'axios';
-import { Toaster, toast } from 'sonner';
+import { toast } from 'sonner';
+import { joinGroup } from '@/app/actions';
+import { useFormState } from 'react-dom';
+import { Loader2 } from 'lucide-react';
 
-export default function JoinGroup({ groups, fetchGroups }: any) {
+export default function JoinGroup() {
   const [open, setOpen] = React.useState(false);
   const [isDesktop, setIsDesktop] = React.useState<boolean | undefined>();
 
@@ -61,11 +63,7 @@ export default function JoinGroup({ groups, fetchGroups }: any) {
               Join an existing group to share files with your group
             </DialogDescription>
           </DialogHeader>
-          <ProfileForm
-            setOpen={setOpen}
-            groups={groups}
-            fetchGroups={fetchGroups}
-          />
+          <ProfileForm setOpen={setOpen} joinGroup={joinGroup} />
         </DialogContent>
       </Dialog>
     );
@@ -83,12 +81,7 @@ export default function JoinGroup({ groups, fetchGroups }: any) {
             Join an existing group to share files with your group
           </DrawerDescription>
         </DrawerHeader>
-        <ProfileForm
-          setOpen={setOpen}
-          groups={groups}
-          fetchGroups={fetchGroups}
-          className='px-4'
-        />
+        <ProfileForm setOpen={setOpen} joinGroup={joinGroup} className='px-4' />
 
         <DrawerFooter className=''>
           <DrawerClose asChild></DrawerClose>
@@ -98,50 +91,41 @@ export default function JoinGroup({ groups, fetchGroups }: any) {
   );
 }
 
-function ProfileForm({ className, setOpen, groups, fetchGroups }: any) {
-  const [code, setCode] = React.useState('');
+function ProfileForm({ className, setOpen, joinGroup }: any) {
+  const initialState = {
+    message: '',
+  };
+  const [state, formAction] = useFormState(joinGroup, initialState);
+  const [loading, setLoading] = React.useState(false);
 
-  const handleChange = (e: any) => {
-    setCode(e.target.value);
+  const handleClick = () => {
+    setLoading(true);
   };
 
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    let userInGroupCodeAlready = false;
-
-    groups?.map((each: any) => {
-      if (each.code === code) userInGroupCodeAlready = true;
-    });
-
-    if (userInGroupCodeAlready) {
-      toast.error('You are already in this group');
-      return;
+  React.useEffect(() => {
+    if (state.message === 'Successfully joined Group') {
+      setOpen(false);
+      toast.success(state.message);
+    } else if (state.message === 'Group does not exist') {
+      toast.error(state.message);
+    } else if (state.message === 'You are a member of the group') {
+      toast.info(state.message);
     }
+    setLoading(false);
+  }, [state]);
 
-    axios
-      .put('/api/groups/join', {
-        code: code,
-      })
-      .then((response: any) => {
-        toast.success(response?.data);
-        setOpen(false);
-        fetchGroups();
-      })
-      .catch(() => {
-        toast.error('The following code does not exist');
-      });
-  };
   return (
     <form
       className={cn('grid items-start gap-4', className)}
-      onSubmit={handleSubmit}
+      action={formAction}
     >
       <div className='grid gap-2'>
-        <Label htmlFor='Code'>Code</Label>
-        <Input id='Code' value={code} onChange={handleChange} defaultValue='' />
+        <Label htmlFor='code'>Code</Label>
+        <Input type='text' id='code' name='code' required />
       </div>
-      <Button className='mt-2' type='submit'>
-        Save{' '}
+      <Button type='submit' onClick={handleClick}>
+        {loading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
+        {loading ? 'Saving ' : 'Save '}
       </Button>
     </form>
   );

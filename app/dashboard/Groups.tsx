@@ -28,7 +28,7 @@ export default async function Groups() {
         </h3>
         <div className='flex gap-6'>
           <CreateGroup />
-          <JoinGroup groups={groups} />
+          <JoinGroup />
         </div>
       </div>
 

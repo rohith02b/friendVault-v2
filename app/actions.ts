@@ -5,7 +5,12 @@ import { revalidatePath } from 'next/cache';
 import uniqId from 'generate-unique-id';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 
-export async function createGroup(setopen: string, formData: FormData) {
+export async function createGroup(
+  prevState: {
+    message: string;
+  },
+  formData: FormData
+) {
   'use server';
   let name: any = formData.get('name');
   let code: any = formData.get('code');
@@ -41,4 +46,47 @@ export async function createGroup(setopen: string, formData: FormData) {
 
   revalidatePath('/dashboard');
   return { message: 'Successfully created Group' };
+}
+
+export async function joinGroup(
+  prevState: {
+    message: string;
+  },
+  formData: FormData
+) {
+  'use server';
+  let code: any = formData.get('code');
+  code = code?.toString();
+  const group = await prisma.groups.findUnique({
+    where: {
+      code: code,
+    },
+  });
+
+  if (group) {
+    const { getUser } = getKindeServerSession();
+    const user = await getUser();
+
+    if (group.members.includes(user?.id || '')) {
+      return { message: 'You are a member of the group' };
+    }
+
+    await prisma.groups.update({
+      where: {
+        code: code,
+      },
+      data: {
+        members: {
+          push: user?.id,
+        },
+      },
+    });
+  } else {
+    await prisma.$disconnect();
+    return { message: 'Group does not exist' };
+  }
+
+  await prisma.$disconnect();
+  revalidatePath('/dashboard');
+  return { message: 'Successfully joined Group' };
 }

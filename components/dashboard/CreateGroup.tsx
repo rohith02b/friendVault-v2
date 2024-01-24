@@ -28,7 +28,7 @@ import { useFormState, useFormStatus } from 'react-dom';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 
-export default function CreateGroup({}: any) {
+export default function CreateGroup() {
   const [open, setOpen] = React.useState(false);
   const [isDesktop, setIsDesktop] = React.useState<boolean | undefined>();
 
