@@ -17,6 +17,8 @@ import { CustomCard } from '@/types/CustomCard';
 import { useRouter } from 'next/navigation';
 import { IconDotsVertical } from '@tabler/icons-react';
 import { useTheme } from 'next-themes';
+import { downloadBlob } from '@/app/actions';
+import JsFileDownloader from 'js-file-downloader';
 
 const GroupCard = ({ content_type, content }: CustomCard) => {
   const router = useRouter();
@@ -50,6 +52,17 @@ const GroupCard = ({ content_type, content }: CustomCard) => {
   }
 
   if (content_type === 'file') {
+    const handleDownload = async (id: any) => {
+      try {
+        const response: any = await downloadBlob(id);
+        new JsFileDownloader({
+          url: response?.message,
+        });
+      } catch (error) {
+        console.error('Error downloading file:', error);
+      }
+    };
+
     const truncatedName =
       content.content_name.length > 20
         ? `${content.content_name.substring(0, 15)}...`
@@ -77,7 +90,11 @@ const GroupCard = ({ content_type, content }: CustomCard) => {
                   <IconDotsVertical width={25} height={25} stroke={1} />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem>Download</DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => handleDownload(content.content_id)}
+                  >
+                    Download
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>Delete</DropdownMenuItem>
                 </DropdownMenuContent>

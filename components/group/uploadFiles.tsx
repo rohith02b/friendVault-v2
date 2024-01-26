@@ -168,11 +168,12 @@ function ProfileForm({
 
         // Check if the upload was successful (you may need to customize this based on your Azure setup)
         if (response.ok) {
+          let url = response.url.split('?');
           fileData.status = 'uploaded';
           UpdateContent({
             content_id: uniqId(),
             group_id: groupId,
-            url: response.url,
+            url: url[0],
             path: `/${path}`,
             content_name: file.name,
             content_type: 'file',
