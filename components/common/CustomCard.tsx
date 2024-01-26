@@ -1,29 +1,37 @@
 'use client';
 
 import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+
 import { IconFile, IconFolder, IconUsersGroup } from '@tabler/icons-react';
 import Link from 'next/link';
 import { CustomCard } from '@/types/CustomCard';
 import { useRouter } from 'next/navigation';
+import { IconDotsVertical } from '@tabler/icons-react';
+import { useTheme } from 'next-themes';
 
 const GroupCard = ({ content_type, content }: CustomCard) => {
   const router = useRouter();
+  const { resolvedTheme } = useTheme();
 
   if (content_type === 'group') {
     return (
       <Link href={`/groups/${content.id}`}>
         <Card
-          className='hover:-mt-4 hover:mb-4 transition-all duration-300'
           style={{
             cursor: 'pointer',
           }}
+          className={`hover:shadow-md transition-all duration-200 ${
+            resolvedTheme === 'dark' ? 'hover:shadow-slate-50' : ''
+          }`}
         >
           <CardHeader>
             <CardTitle>
@@ -47,19 +55,37 @@ const GroupCard = ({ content_type, content }: CustomCard) => {
         ? `${content.content_name.substring(0, 15)}...`
         : content.content_name;
     return (
-      <Card
-        style={{
-          cursor: 'pointer',
-        }}
-        className='hover:-mt-4 hover:mb-4 transition-all duration-300'
-      >
-        <CardHeader>
-          <CardTitle>
-            <IconFile width={50} height={50} stroke={1} className='mx-auto' />
-          </CardTitle>
-        </CardHeader>
-        <CardContent>{truncatedName}</CardContent>
-      </Card>
+      <>
+        <Card
+          style={{
+            cursor: 'pointer',
+          }}
+          className={`hover:shadow-md transition-all duration-200 ${
+            resolvedTheme === 'dark' ? 'hover:shadow-slate-50' : ''
+          }`}
+        >
+          <CardHeader>
+            <CardTitle className='relative'>
+              <IconFile width={50} height={50} stroke={1} className='mx-auto' />
+            </CardTitle>
+          </CardHeader>
+          <CardContent className='relative'>
+            {truncatedName}
+            <div className='absolute top-0 right-4'>
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <IconDotsVertical width={25} height={25} stroke={1} />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem>Download</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>Delete</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </CardContent>
+        </Card>
+      </>
     );
   }
 
@@ -70,20 +96,38 @@ const GroupCard = ({ content_type, content }: CustomCard) => {
     };
 
     return (
-      <Card
-        style={{
-          cursor: 'pointer',
-        }}
-        onClick={handleClick}
-        className='hover:-mt-4 hover:mb-4 transition-all duration-300'
-      >
-        <CardHeader>
-          <CardTitle>
-            <IconFolder width={50} height={50} stroke={1} className='mx-auto' />
-          </CardTitle>
-        </CardHeader>
-        <CardContent>{content.content_name}</CardContent>
-      </Card>
+      <>
+        <Card
+          style={{
+            cursor: 'pointer',
+          }}
+          onClick={handleClick}
+          className={`hover:shadow-md transition-all duration-200 ${
+            resolvedTheme === 'dark' ? 'hover:shadow-slate-50' : ''
+          }`}
+        >
+          <CardHeader>
+            <CardTitle className='relative'>
+              <IconFile width={50} height={50} stroke={1} className='mx-auto' />
+            </CardTitle>
+          </CardHeader>
+          <CardContent className='relative'>
+            {content.content_name}
+            <div className='absolute top-0 right-4'>
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <IconDotsVertical width={25} height={25} stroke={1} />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem>Download</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>Delete</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </CardContent>
+        </Card>
+      </>
     );
   }
 };

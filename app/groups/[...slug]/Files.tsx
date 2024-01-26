@@ -2,9 +2,10 @@ import { Content } from '@/types/Content';
 import React from 'react';
 import { renderSkeletons } from '@/components/common/skeletonCard';
 import ContentCard from '../../../components/common/CustomCard';
-import NoGroups from '@/components/dashboard/NoGroups';
+import NoGroups from '@/components/common/NoGroups';
 import prisma from '@/lib/prisma';
 import Heading3 from '@/components/ui/heading3';
+import UploadFiles from '@/components/group/uploadFiles';
 
 const Files = async ({ groupId, path }: any) => {
   const files = await prisma.content.findMany({
@@ -30,8 +31,7 @@ const Files = async ({ groupId, path }: any) => {
       <div className='flex flex-col md:flex-row gap-6 md:gap-0 justify-between'>
         <Heading3 content={'Files'} />
         <div className='flex gap-6'>
-          {/* <CreateGroup fetchGroups={fetchGroups} />
-          <JoinGroup fetchGroups={fetchGroups} groups={groups} /> */}
+          <UploadFiles groupId={groupId} path={path} />
         </div>
       </div>
       <div>

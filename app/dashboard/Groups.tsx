@@ -1,7 +1,7 @@
 import CreateGroup from '@/components/dashboard/CreateGroup';
 import JoinGroup from '@/components/dashboard/JoinGroup';
 import GroupCard from '@/components/common/CustomCard';
-import NoGroups from '@/components/dashboard/NoGroups';
+import NoGroups from '@/components/common/NoGroups';
 import { Groups } from '@/types/Groups';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import prisma from '@/lib/prisma';

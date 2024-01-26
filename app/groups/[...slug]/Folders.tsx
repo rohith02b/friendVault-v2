@@ -1,11 +1,10 @@
-import ContentCard from '@/app/dashboard/content-card';
 import CustomCard from '@/components/common/CustomCard';
-import { renderSkeletons } from '@/components/common/skeletonCard';
-import NoGroups from '@/components/dashboard/NoGroups';
+import NoGroups from '@/components/common/NoGroups';
 import Heading3 from '@/components/ui/heading3';
 import prisma from '@/lib/prisma';
 import { Content } from '@/types/Content';
 import React from 'react';
+import CreateFolder from '@/components/group/createFolder';
 
 const Folders = async ({ groupId, path }: any) => {
   const folders = await prisma.content.findMany({
@@ -32,8 +31,7 @@ const Folders = async ({ groupId, path }: any) => {
         <Heading3 content={'Folders'} />
 
         <div className='flex gap-6'>
-          {/* <CreateGroup fetchGroups={fetchGroups} />
-          <JoinGroup fetchGroups={fetchGroups} groups={groups} /> */}
+          <CreateFolder />
         </div>
       </div>
 

@@ -1,9 +1,10 @@
 import Link from 'next/link';
 import ChangeTheme from '../common/changeTheme';
-import { Toaster } from 'sonner';
+import { Toaster } from '../ui/sonner';
 import { Button } from '../ui/button';
 import Image from 'next/image';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
+import { IconUserCircle } from '@tabler/icons-react';
 
 export default async function DashboardLayout({ children }: any) {
   const { getUser } = getKindeServerSession();
@@ -15,13 +16,22 @@ export default async function DashboardLayout({ children }: any) {
         <div className='w-full xl:max-w-[1500px] mx-auto px-6'>
           <div className='my-6 flex flex-row gap-6  gap-0 justify-between'>
             <div className='flex gap-4 items-center'>
-              <Image
-                src={user?.picture || ''}
-                width={32}
-                height={32}
-                alt={user?.given_name || ''}
-                className='rounded-full cursor-pointer'
-              />
+              {user?.picture ? (
+                <Image
+                  src={user?.picture || ''}
+                  width={32}
+                  height={32}
+                  alt={user?.given_name || ''}
+                  className='rounded-full cursor-pointer'
+                />
+              ) : (
+                <IconUserCircle
+                  width={32}
+                  height={32}
+                  stroke={1}
+                  className='rounded-full cursor-pointer'
+                />
+              )}
               <div>{user?.given_name}</div>
             </div>
             <Link href='/api/auth/logout' className='mx-0'>
@@ -40,9 +50,9 @@ export default async function DashboardLayout({ children }: any) {
               <ChangeTheme />
             </div>
           </footer>
-        </div>
 
-        <Toaster />
+          <Toaster />
+        </div>
       </div>
     </div>
   );

@@ -7,6 +7,23 @@ import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 const ContentCard = async () => {
   const { getUser } = getKindeServerSession();
   const user = await getUser();
+  let totalNumberOfFiles = 0;
+
+  const countFiles = async () => {
+    // Use Promise.all to wait for all async operations to complete
+    await Promise.all(
+      ids.map(async (element) => {
+        let result = await prisma.content.findMany({
+          where: {
+            group_id: element,
+          },
+        });
+
+        totalNumberOfFiles += result?.length || 0;
+      })
+    );
+  };
+
   const groups = await prisma.groups.findMany({
     where: {
       members: {
@@ -24,17 +41,8 @@ const ContentCard = async () => {
     ids.push(element.id);
   });
 
-  let totalNumberOfFiles = 0;
-
-  ids.forEach(async (element: string) => {
-    let result = await prisma.content.findMany({
-      where: {
-        group_id: element,
-      },
-    });
-
-    totalNumberOfFiles += result?.length;
-  });
+  // Wait for countFiles to complete before proceeding
+  await countFiles();
 
   return (
     <div className=' grid md:grid-cols-3 grid-cols-1 gap-12 my-12'>
