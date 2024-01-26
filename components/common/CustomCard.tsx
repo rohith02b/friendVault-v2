@@ -19,6 +19,7 @@ import { IconDotsVertical } from '@tabler/icons-react';
 import { useTheme } from 'next-themes';
 import { downloadBlob } from '@/app/actions';
 import JsFileDownloader from 'js-file-downloader';
+import { toast } from 'sonner';
 
 const GroupCard = ({ content_type, content }: CustomCard) => {
   const router = useRouter();
@@ -57,7 +58,7 @@ const GroupCard = ({ content_type, content }: CustomCard) => {
         const response: any = await downloadBlob(id);
         new JsFileDownloader({
           url: response?.message,
-        });
+        }).catch((error: any) => [toast.error('An error occurred')]);
       } catch (error) {
         console.error('Error downloading file:', error);
       }
@@ -136,8 +137,6 @@ const GroupCard = ({ content_type, content }: CustomCard) => {
                   <IconDotsVertical width={25} height={25} stroke={1} />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem>Download</DropdownMenuItem>
-                  <DropdownMenuSeparator />
                   <DropdownMenuItem>Delete</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

@@ -27,7 +27,6 @@ import { useFormState } from 'react-dom';
 import { getUrl } from '@/app/actions';
 import { toast } from 'sonner';
 import { UpdateContent } from '@/app/actions';
-import { Skeleton } from '../ui/skeleton';
 import { CheckCircle, Loader2, XCircle } from 'lucide-react';
 import uniqId from 'generate-unique-id';
 
@@ -149,7 +148,7 @@ function ProfileForm({
         const id = uniqId();
         let name = file.name.split('.');
 
-        let url = `${urlArr[0]}/${groupId}/${path ? '/' + path : ''}${
+        let url = `${urlArr[0]}/${groupId}/${path ? path + '/' : ''}${
           name[0]
         }-${id}.${name[1]}?${urlArr[1]}`;
         // Update status to 'uploading'
@@ -193,6 +192,7 @@ function ProfileForm({
       selectedFiles.forEach((fileData: any) => {
         fileData.status = 'error';
       });
+      toast.error('Could not upload files.');
       setSelectedFiles([...selectedFiles]);
       setUploading(false);
     }

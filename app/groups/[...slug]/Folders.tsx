@@ -31,7 +31,7 @@ const Folders = async ({ groupId, path }: any) => {
         <Heading3 content={'Folders'} />
 
         <div className='flex gap-6'>
-          <CreateFolder />
+          <CreateFolder groupId={groupId} path={path} />
         </div>
       </div>
 

@@ -5,7 +5,6 @@ import { revalidatePath } from 'next/cache';
 import uniqId from 'generate-unique-id';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import { BlobServiceClient, BlobSASPermissions } from '@azure/storage-blob';
-import { Content } from '@/types/Content';
 
 export async function createGroup(
   prevState: {
@@ -123,6 +122,28 @@ export async function getUrl(
   }
 }
 
+export async function createFolder(groupId: any, path: any, name: any) {
+  try {
+    const id = uniqId();
+    await prisma.content.create({
+      data: {
+        content_id: id,
+        group_id: groupId,
+        url: name,
+        path: `/${path}`,
+        content_name: name,
+        content_type: 'folder',
+        content_mimetype: 'application/folder',
+        uploaded: true,
+      },
+    });
+    revalidatePath(`/dashboard/${groupId}/${path}`);
+    return { message: 'Successfully created folder' };
+  } catch (error) {
+    return { message: 'Error creating folder' };
+  }
+}
+
 export async function UpdateContent(data: any) {
   try {
     await prisma.content.create({
@@ -174,7 +195,6 @@ export async function downloadBlob(id: string) {
     const sasToken = await blobClient.generateSasUrl(sasOptions);
     return { message: sasToken };
   } catch (error) {
-    console.log(error);
     return { messagge: error };
   }
 }
