@@ -3,13 +3,11 @@ import * as React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import prisma from '@/lib/prisma';
 import { Groups } from '@/types/Groups';
+import { getServerSession } from 'next-auth';
 
 const ContentCard = async () => {
-  // const { getUser } = getKindeServerSession();
-  // const user = await getUser();
-
   let totalNumberOfFiles = 0;
-  let user: any;
+  const session = await getServerSession();
 
   const countFiles = async () => {
     // Use Promise.all to wait for all async operations to complete
@@ -29,7 +27,7 @@ const ContentCard = async () => {
   const groups = await prisma.groups.findMany({
     where: {
       members: {
-        has: user?.id || '',
+        has: session?.user?.email || '',
       },
     },
     select: {
@@ -39,7 +37,7 @@ const ContentCard = async () => {
 
   let ids: string[] = [];
 
-  groups.forEach((element: Groups) => {
+  groups.forEach((element: any) => {
     ids.push(element.id);
   });
 

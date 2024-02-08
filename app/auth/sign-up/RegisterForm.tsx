@@ -50,7 +50,7 @@ const LoginForm = () => {
           className='mt-4'
           onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
         >
-          <IconBrandGoogle className='mr-2 h-4 w-4' /> Login with Google
+          <IconBrandGoogle className='mr-2 h-4 w-4' /> Continue with Google
         </Button>
       </div>
     </>

@@ -7,14 +7,14 @@ import { Fade } from 'react-awesome-reveal';
 
 const NoGroups = () => {
   return (
-    <Fade cascade duration={1000} className='mt-12 ' triggerOnce>
+    <Fade cascade duration={1000} className='mt-24 ' triggerOnce>
       <IconZoomExclamation
         width={100}
         height={100}
         className='mx-auto '
         stroke={1}
       />
-      <div className='flex justify-center'>
+      <div className='flex justify-center -mt-12'>
         <Heading3 content='No data found' />
       </div>
     </Fade>

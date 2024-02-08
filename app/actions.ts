@@ -3,8 +3,8 @@
 import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import uniqId from 'generate-unique-id';
-// import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import { BlobServiceClient, BlobSASPermissions } from '@azure/storage-blob';
+import { getServerSession } from 'next-auth';
 
 export async function createGroup(
   prevState: {
@@ -30,15 +30,15 @@ export async function createGroup(
   }
 
   const id = uniqId();
-  let user: any;
+  const session = await getServerSession();
 
   await prisma.groups.create({
     data: {
       id,
-      owner: user?.id || '',
+      owner: session?.user?.email || '',
       code: code,
       name: name,
-      members: [user?.id || ''],
+      members: [session?.user?.email || ''],
     },
   });
 
@@ -62,9 +62,9 @@ export async function joinGroup(
   });
 
   if (group) {
-    let user: any;
+    const session = await getServerSession();
 
-    if (group.members.includes(user?.id || '')) {
+    if (group.members.includes(session?.user?.email || '')) {
       return { message: 'You are a member of the group' };
     }
 
@@ -74,7 +74,7 @@ export async function joinGroup(
       },
       data: {
         members: {
-          push: user?.id,
+          push: session?.user?.email || '',
         },
       },
     });

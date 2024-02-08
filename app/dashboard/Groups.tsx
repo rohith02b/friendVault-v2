@@ -4,14 +4,15 @@ import GroupCard from '@/components/common/CustomCard';
 import NoGroups from '@/components/common/NoGroups';
 import { Groups } from '@/types/Groups';
 import prisma from '@/lib/prisma';
+import { getServerSession } from 'next-auth';
 
 export default async function Groups() {
-  let user: any;
+  const session = await getServerSession();
 
   const groups: Groups[] = await prisma.groups.findMany({
     where: {
       members: {
-        has: user?.id || '',
+        has: session?.user?.email || '',
       },
     },
   });
