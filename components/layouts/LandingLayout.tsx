@@ -17,10 +17,10 @@ export default async function LandingLayout({ children }: any) {
             </Link>
           ) : (
             <>
-              <Link href='/api/auth/login'>
+              <Link href='/auth/sign-in'>
                 <Button>Sign in</Button>
               </Link>
-              <Link href='/api/auth/register'>
+              <Link href='/auth/sign-up'>
                 <Button>Sign up</Button>
               </Link>
             </>

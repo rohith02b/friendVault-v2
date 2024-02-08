@@ -16,22 +16,4 @@ export const authConfig: NextAuthOptions = {
       clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
     }),
   ],
-  callbacks: {
-    async signIn({ user, account, profile, email, credentials }) {
-      return true;
-    },
-  },
 };
-
-export async function loginIsRequiredServer() {
-  const session = await getServerSession(authConfig);
-  if (!session) return redirect('/');
-}
-
-export function loginIsRequiredClient() {
-  if (typeof window !== 'undefined') {
-    const session = useSession();
-    const router = useRouter();
-    if (!session) router.push('/');
-  }
-}

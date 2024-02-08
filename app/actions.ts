@@ -30,8 +30,7 @@ export async function createGroup(
   }
 
   const id = uniqId();
-  const { getUser } = getKindeServerSession();
-  const user = await getUser();
+  let user: any;
 
   await prisma.groups.create({
     data: {
@@ -63,8 +62,7 @@ export async function joinGroup(
   });
 
   if (group) {
-    const { getUser } = getKindeServerSession();
-    const user = await getUser();
+    let user: any;
 
     if (group.members.includes(user?.id || '')) {
       return { message: 'You are a member of the group' };
