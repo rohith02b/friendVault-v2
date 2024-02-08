@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import prisma from '@/lib/prisma';
+import { Groups } from '@/types/Groups';
 
 const ContentCard = async () => {
   // const { getUser } = getKindeServerSession();
@@ -38,7 +39,7 @@ const ContentCard = async () => {
 
   let ids: string[] = [];
 
-  groups.forEach((element) => {
+  groups.forEach((element: Groups) => {
     ids.push(element.id);
   });
 

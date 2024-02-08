@@ -52,9 +52,6 @@ const LoginForm = () => {
         >
           <IconBrandGoogle className='mr-2 h-4 w-4' /> Login with Google
         </Button>
-        <Button>
-          <GithubIcon className='mr-2 h-4 w-4' /> Login with Github
-        </Button>
       </div>
     </>
   );

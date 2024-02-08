@@ -11,7 +11,7 @@
   "dependencies": {
     "@azure/storage-blob": "^12.17.0",
     "@emotion/react": "^11.11.3",
-    "@prisma/client": "^5.8.0",
+    "@prisma/client": "^5.9.1",
     "@radix-ui/react-collapsible": "^1.0.3",
     "@radix-ui/react-context-menu": "^2.1.5",
     "@radix-ui/react-dialog": "^1.0.5",

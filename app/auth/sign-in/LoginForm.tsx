@@ -8,9 +8,14 @@ import { cn } from '@/lib/utils';
 import { GithubIcon, Loader2 } from 'lucide-react';
 import { IconBrandGoogle } from '@tabler/icons-react';
 import { signIn } from 'next-auth/react';
+import { toast } from 'sonner';
 
 const LoginForm = () => {
   const [loading, setLoading] = useState<Boolean>(false);
+
+  const handleLogin = (provider: string) => {
+    signIn(provider, { callbackUrl: '/dashboard' });
+  };
 
   return (
     <>
@@ -42,14 +47,8 @@ const LoginForm = () => {
         </div>
       </form>
       <div className='w-full md:w-1/2 gap-4 flex flex-col'>
-        <Button
-          className='mt-4'
-          onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
-        >
+        <Button className='mt-4' onClick={(e: any) => handleLogin('google')}>
           <IconBrandGoogle className='mr-2 h-4 w-4' /> Login with Google
-        </Button>
-        <Button>
-          <GithubIcon className='mr-2 h-4 w-4' /> Login with Github
         </Button>
       </div>
     </>
