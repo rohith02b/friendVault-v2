@@ -1,4 +1,5 @@
 import { NextAuthOptions, User, getServerSession } from 'next-auth';
+import bcrypt from 'bcrypt';
 
 import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
@@ -27,7 +28,12 @@ export const authConfig: NextAuthOptions = {
           return null;
         }
 
-        if (dbUser && dbUser.password === credentials.password) {
+        const validPassword = await bcrypt.compare(
+          credentials.password,
+          dbUser?.password || ''
+        );
+
+        if (dbUser && validPassword) {
           const { password, ...dbUserWithoutPassword } = dbUser;
           return dbUserWithoutPassword as User;
         }

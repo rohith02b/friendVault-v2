@@ -11,6 +11,8 @@ export default async function DashboardLayout({ children }: any) {
   const session = await getServerSession();
   const user = session?.user;
 
+  console.log(user);
+
   return (
     <div>
       <div className='flex flex-col'>
