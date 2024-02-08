@@ -3,12 +3,10 @@ import JoinGroup from '@/components/dashboard/JoinGroup';
 import GroupCard from '@/components/common/CustomCard';
 import NoGroups from '@/components/common/NoGroups';
 import { Groups } from '@/types/Groups';
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import prisma from '@/lib/prisma';
 
 export default async function Groups() {
-  const { getUser } = getKindeServerSession();
-  const user = await getUser();
+  let user: any;
 
   const groups: Groups[] = await prisma.groups.findMany({
     where: {

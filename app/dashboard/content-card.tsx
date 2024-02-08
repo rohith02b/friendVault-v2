@@ -2,12 +2,13 @@ import * as React from 'react';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import prisma from '@/lib/prisma';
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 
 const ContentCard = async () => {
-  const { getUser } = getKindeServerSession();
-  const user = await getUser();
+  // const { getUser } = getKindeServerSession();
+  // const user = await getUser();
+
   let totalNumberOfFiles = 0;
+  let user: any;
 
   const countFiles = async () => {
     // Use Promise.all to wait for all async operations to complete

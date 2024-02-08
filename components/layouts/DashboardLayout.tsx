@@ -3,12 +3,13 @@ import ChangeTheme from '../common/changeTheme';
 import { Toaster } from '../ui/sonner';
 import { Button } from '../ui/button';
 import Image from 'next/image';
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import { IconUserCircle } from '@tabler/icons-react';
+import { getServerSession } from 'next-auth';
+import LogoutButton from '../common/LogoutButton';
 
 export default async function DashboardLayout({ children }: any) {
-  const { getUser } = getKindeServerSession();
-  const user = await getUser();
+  const session = await getServerSession();
+  const user = session?.user;
 
   return (
     <div>
@@ -16,12 +17,12 @@ export default async function DashboardLayout({ children }: any) {
         <div className='w-full xl:max-w-[1500px] mx-auto px-6'>
           <div className='my-6 flex flex-row gap-6  gap-0 justify-between'>
             <div className='flex gap-4 items-center'>
-              {user?.picture ? (
+              {user?.image ? (
                 <Image
-                  src={user?.picture || ''}
+                  src={user?.image || ''}
                   width={32}
                   height={32}
-                  alt={user?.given_name || ''}
+                  alt={user?.name || ''}
                   className='rounded-full cursor-pointer'
                 />
               ) : (
@@ -32,11 +33,9 @@ export default async function DashboardLayout({ children }: any) {
                   className='rounded-full cursor-pointer'
                 />
               )}
-              <div>{user?.given_name}</div>
+              <div>{user?.name}</div>
             </div>
-            <Link href='/api/auth/logout' className='mx-0'>
-              <Button>Logout</Button>
-            </Link>
+            <LogoutButton />
           </div>
         </div>
         <div className='w-full xl:max-w-[1500px] mx-auto px-6'>
@@ -50,7 +49,6 @@ export default async function DashboardLayout({ children }: any) {
               <ChangeTheme />
             </div>
           </footer>
-
           <Toaster />
         </div>
       </div>

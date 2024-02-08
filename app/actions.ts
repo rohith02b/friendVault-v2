@@ -3,7 +3,7 @@
 import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import uniqId from 'generate-unique-id';
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
+// import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import { BlobServiceClient, BlobSASPermissions } from '@azure/storage-blob';
 
 export async function createGroup(
@@ -18,7 +18,6 @@ export async function createGroup(
 
   code = code?.toString();
   name = name?.toString();
-  // Need to check if a group with the code already exists
   const codeExists = await prisma.groups.findUnique({
     where: {
       code: code,
@@ -179,11 +178,11 @@ export async function downloadBlob(id: string) {
     let decodedFileName = decodeURIComponent(fileName);
 
     const containerClient = blobServiceClient.getContainerClient(container);
-    const expiryTime = new Date();
-    expiryTime.setHours(expiryTime.getMinutes() + 10);
+    const startTime = new Date();
+    const expiryTime = new Date(startTime.getTime() + 10 * 60 * 1000); // 10 minutes in milliseconds
 
     const sasOptions: any = {
-      startsOn: new Date(),
+      startsOn: startTime,
       expiresOn: expiryTime,
       permissions: BlobSASPermissions.parse('r'),
     };
@@ -195,6 +194,6 @@ export async function downloadBlob(id: string) {
     const sasToken = await blobClient.generateSasUrl(sasOptions);
     return { message: sasToken };
   } catch (error) {
-    return { messagge: error };
+    return { message: error }; // Fix the property name here
   }
 }

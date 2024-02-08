@@ -1,12 +1,11 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import ChangeTheme from '@/components/common/changeTheme';
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
+import { getServerSession } from 'next-auth';
 
 export default async function LandingLayout({ children }: any) {
-  const { getUser } = getKindeServerSession();
-  const user = await getUser();
-
+  const session = await getServerSession();
+  const user = session?.user;
   return (
     <div className='px-6 md:max-w-6xl mx-auto'>
       <nav className='my-6  flex flex-col gap-6 md:flex-row md:gap-0 justify-center md:justify-between'>

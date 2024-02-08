@@ -56,6 +56,7 @@ const GroupCard = ({ content_type, content }: CustomCard) => {
     const handleDownload = async (id: any) => {
       try {
         const response: any = await downloadBlob(id);
+        console.log(decodeURIComponent(response?.message));
         new JsFileDownloader({
           url: response?.message,
         }).catch((error: any) => [toast.error('An error occurred')]);
@@ -109,8 +110,23 @@ const GroupCard = ({ content_type, content }: CustomCard) => {
 
   if (content_type === 'folder') {
     const handleClick = (folder: any) => {
-      const pathToRedirect = location.pathname + `/${content.content_name}`;
-      router.push(pathToRedirect);
+      let pathArr: any = location.pathname + `/${content.content_name}`;
+      pathArr = pathArr.split('/').slice(1); // Use slice(1) to remove the empty string at the beginning
+
+      // Find the index of 'vault' in the array
+      const vaultIndex = pathArr.indexOf('vault');
+
+      // If 'vault' is found, construct the path from the 'groups' index
+      if (vaultIndex !== -1) {
+        const newPath = `/${pathArr.slice(vaultIndex + 2).join('/')}`;
+        router.push(newPath);
+
+        // Redirect logic here (e.g., using Next.js router)
+        // For example, using Next.js router
+        // router.push(newPath);
+      } else {
+        console.error('Error: "vault" not found in the path.');
+      }
     };
 
     return (

@@ -2,7 +2,7 @@ import * as React from 'react';
 import MainLayout from '@/components/layouts/LandingLayout';
 import LandingAnimation from '@/components/common/LandingAnimation';
 
-const Index = () => {
+const Index = async () => {
   return (
     <MainLayout>
       <div className=' text-center'>

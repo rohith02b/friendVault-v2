@@ -181,6 +181,7 @@ function ProfileForm({
           });
         } else {
           fileData.status = 'error';
+          toast.error(`Could not upload file ${file.name}`);
         }
 
         setSelectedFiles([...selectedFiles]);
