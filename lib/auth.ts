@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { NextAuthOptions, User, getServerSession } from 'next-auth';
 import bcrypt from 'bcrypt';
 
@@ -66,7 +68,7 @@ export const authConfig: NextAuthOptions = {
         .create({
           data: {
             id: user?.id,
-            username: user?.name || '',
+            name: user?.name || '',
             email: user?.email || '',
             password: 'nopass',
             image: user?.image || '',

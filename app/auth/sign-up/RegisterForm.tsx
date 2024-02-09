@@ -14,7 +14,7 @@ import { useRouter } from 'next/navigation';
 
 const RegisterForm = () => {
   const [loading, setLoading] = useState(false);
-  const [username, setUsername] = useState('');
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
@@ -29,7 +29,7 @@ const RegisterForm = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, email, password }),
+        body: JSON.stringify({ name, email, password }),
       });
 
       if (response.ok) {
@@ -53,14 +53,14 @@ const RegisterForm = () => {
         onSubmit={handleSubmit}
       >
         <div className='grid gap-2'>
-          <Label htmlFor='username'>Username</Label>
+          <Label htmlFor='name'>name</Label>
           <Input
             type='text'
-            id='username'
-            name='username'
+            id='name'
+            name='name'
             required
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
           />
         </div>
         <div className='grid gap-2'>
