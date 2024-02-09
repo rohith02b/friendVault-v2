@@ -16,6 +16,7 @@ const ContentCard = async () => {
         let result = await prisma.content.findMany({
           where: {
             group_id: element,
+            content_type: 'file',
           },
         });
 

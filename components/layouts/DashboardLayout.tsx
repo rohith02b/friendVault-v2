@@ -6,8 +6,13 @@ import Image from 'next/image';
 import { IconUserCircle } from '@tabler/icons-react';
 import { getServerSession } from 'next-auth';
 import LogoutButton from '../common/LogoutButton';
+import ViewMembers from '../group/ViewMembers';
 
-export default async function DashboardLayout({ children }: any) {
+export default async function DashboardLayout({
+  option,
+  groupId,
+  children,
+}: any) {
   const session = await getServerSession();
   const user = session?.user;
 
@@ -35,7 +40,11 @@ export default async function DashboardLayout({ children }: any) {
               )}
               <div>{user?.name}</div>
             </div>
-            <LogoutButton />
+            {option === 'logout' ? (
+              <LogoutButton />
+            ) : (
+              <ViewMembers groupId={groupId} />
+            )}
           </div>
         </div>
         <div className='w-full xl:max-w-[1500px] mx-auto px-6'>

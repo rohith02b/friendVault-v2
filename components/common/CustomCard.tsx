@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   DropdownMenu,
@@ -20,35 +20,67 @@ import { useTheme } from 'next-themes';
 import { downloadBlob } from '@/app/actions';
 import JsFileDownloader from 'js-file-downloader';
 import { toast } from 'sonner';
+import ConfirmDeleteModal from './ConfirmDeleteModal';
+import { getSession } from 'next-auth/react';
 
 const GroupCard = ({ content_type, content }: CustomCard) => {
   const router = useRouter();
   const { resolvedTheme } = useTheme();
+  const [groupHover, setGroupHover] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const getUserDetails = async () => {
+      const session = await getSession();
+      if (session?.user?.email === content?.owner) setIsAdmin(true);
+    };
+
+    getUserDetails();
+  }, []);
 
   if (content_type === 'group') {
+    const handleGroupClick = () => {
+      router.push(`/groups/${content.id}`);
+    };
+
+    const handleViewMembersClick = (event: any) => {
+      event.stopPropagation(); // Prevent the event from bubbling up to the parent card
+      // Handle logic for viewing members here
+    };
+
+    const handleConfirmDelete = () => {
+      console.log('confirmed');
+    };
+
     return (
-      <Link href={`/groups/${content.id}`}>
-        <Card
-          style={{
-            cursor: 'pointer',
-          }}
-          className={`hover:shadow-md transition-all duration-200 ${
-            resolvedTheme === 'dark' ? 'hover:shadow-slate-50' : ''
-          }`}
-        >
-          <CardHeader>
-            <CardTitle>
-              <IconUsersGroup
-                width={50}
-                height={50}
-                stroke={1}
-                className='mx-auto'
-              />
-            </CardTitle>
-          </CardHeader>
-          <CardContent>{content.name}</CardContent>
-        </Card>
-      </Link>
+      <Card
+        style={{
+          cursor: 'pointer',
+        }}
+        onClick={handleGroupClick}
+        className={`hover:shadow-md transition-all duration-200 ${
+          resolvedTheme === 'dark' ? 'hover:shadow-slate-50' : ''
+        }`}
+        onMouseEnter={() => setGroupHover(true)}
+        onMouseLeave={() => setGroupHover(false)}
+      >
+        <CardHeader>
+          <CardTitle>
+            <IconUsersGroup
+              width={50}
+              height={50}
+              stroke={1}
+              className='mx-auto'
+            />
+          </CardTitle>
+        </CardHeader>
+        <CardContent>{content.name}</CardContent>
+        {groupHover && isAdmin && (
+          <div className=' mb-7 ' onClick={handleViewMembersClick}>
+            <ConfirmDeleteModal handleConfirmDelete={handleConfirmDelete} />
+          </div>
+        )}
+      </Card>
     );
   }
 
@@ -109,24 +141,10 @@ const GroupCard = ({ content_type, content }: CustomCard) => {
   }
 
   if (content_type === 'folder') {
-    const handleClick = (folder: any) => {
-      let pathArr: any = location.pathname + `/${content.content_name}`;
-      pathArr = pathArr.split('/').slice(1); // Use slice(1) to remove the empty string at the beginning
-
-      // Find the index of 'vault' in the array
-      const vaultIndex = pathArr.indexOf('vault');
-
-      // If 'vault' is found, construct the path from the 'groups' index
-      if (vaultIndex !== -1) {
-        const newPath = `/${pathArr.slice(vaultIndex + 2).join('/')}`;
-        router.push(newPath);
-
-        // Redirect logic here (e.g., using Next.js router)
-        // For example, using Next.js router
-        // router.push(newPath);
-      } else {
-        console.error('Error: "vault" not found in the path.');
-      }
+    const handleClick = () => {
+      const currentUrl = window.location.pathname; // Get the current URL
+      const newUrl = `${currentUrl}/${content.content_name}`; // Append content name to the URL
+      router.push(newUrl); // Navigate to the new URL
     };
 
     return (

@@ -25,7 +25,6 @@ export async function createGroup(
   });
 
   if (codeExists) {
-    await prisma.$disconnect();
     return { message: 'Code already exists.' };
   }
 
@@ -79,7 +78,6 @@ export async function joinGroup(
       },
     });
   } else {
-    await prisma.$disconnect();
     return { message: 'Group does not exist' };
   }
 
@@ -193,5 +191,42 @@ export async function downloadBlob(id: string) {
     return { message: sasToken };
   } catch (error) {
     return { message: error }; // Fix the property name here
+  }
+}
+
+export async function getMembers(groupId: string) {
+  try {
+    const response = await prisma.groups.findUnique({
+      where: {
+        id: groupId,
+      },
+      select: {
+        id: false,
+        owner: false,
+        code: false,
+        name: false,
+        members: true,
+      },
+    });
+
+    const membersInTheGroup = response?.members;
+    if (response) {
+      const membersArr: any = [];
+      membersInTheGroup?.map(async (member: any) => {
+        let each = await prisma.users.findUnique({
+          where: {
+            email: member || '',
+          },
+        });
+        membersArr.push({
+          name: each?.name,
+          image: each?.image,
+        });
+      });
+
+      return membersArr;
+    }
+  } catch (error) {
+    return []; // Return an empty array in case of error
   }
 }

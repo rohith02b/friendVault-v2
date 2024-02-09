@@ -4,7 +4,7 @@ import Groups from './Groups';
 
 export default async function Dashboard() {
   return (
-    <DashboardLayout>
+    <DashboardLayout option='logout'>
       <ContentCard />
       <Groups />
     </DashboardLayout>

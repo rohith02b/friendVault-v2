@@ -9,7 +9,7 @@ export default async function Page({ params }: { params: { slug: string[] } }) {
   const path = params.slug.join('/');
 
   return (
-    <DashboardLayout>
+    <DashboardLayout option='group' groupId={groupId}>
       <Folders groupId={groupId} path={path} />
       <Files groupId={groupId} path={path} />
     </DashboardLayout>

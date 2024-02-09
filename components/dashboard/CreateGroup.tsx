@@ -125,12 +125,16 @@ function ProfileForm({ className, setOpen, createGroup }: any) {
       action={formAction}
     >
       <div className='grid gap-2'>
-        <Label htmlFor='name'>Name</Label>
+        <Label htmlFor='name'>Name*</Label>
         <Input type='text' id='name' name='name' required />
       </div>
       <div className='grid gap-2'>
-        <Label htmlFor='code'>Code</Label>
+        <Label htmlFor='code'>Code*</Label>
         <Input type='text' id='code' name='code' required />
+      </div>
+      <div className='grid gap-2'>
+        <Label htmlFor='connectionString'>Connection String </Label>
+        <Input type='text' id='connectionString' name='connectionString' />
       </div>
       <Button type='submit' onClick={handleClick}>
         {loading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
