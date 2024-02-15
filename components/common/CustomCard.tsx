@@ -17,39 +17,18 @@ import { CustomCard } from '@/types/CustomCard';
 import { useRouter } from 'next/navigation';
 import { IconDotsVertical } from '@tabler/icons-react';
 import { useTheme } from 'next-themes';
-import { downloadBlob } from '@/app/actions';
+import { downloadBlob } from '@/app/actions/files/downloadFile.action';
 import JsFileDownloader from 'js-file-downloader';
 import { toast } from 'sonner';
 import ConfirmDeleteModal from './ConfirmDeleteModal';
-import { getSession } from 'next-auth/react';
 
 const GroupCard = ({ content_type, content }: CustomCard) => {
   const router = useRouter();
   const { resolvedTheme } = useTheme();
-  const [groupHover, setGroupHover] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  useEffect(() => {
-    const getUserDetails = async () => {
-      const session = await getSession();
-      if (session?.user?.email === content?.owner) setIsAdmin(true);
-    };
-
-    getUserDetails();
-  }, []);
 
   if (content_type === 'group') {
     const handleGroupClick = () => {
       router.push(`/groups/${content.id}`);
-    };
-
-    const handleViewMembersClick = (event: any) => {
-      event.stopPropagation(); // Prevent the event from bubbling up to the parent card
-      // Handle logic for viewing members here
-    };
-
-    const handleConfirmDelete = () => {
-      console.log('confirmed');
     };
 
     return (
@@ -61,8 +40,6 @@ const GroupCard = ({ content_type, content }: CustomCard) => {
         className={`hover:shadow-md transition-all duration-200 ${
           resolvedTheme === 'dark' ? 'hover:shadow-slate-50' : ''
         }`}
-        onMouseEnter={() => setGroupHover(true)}
-        onMouseLeave={() => setGroupHover(false)}
       >
         <CardHeader>
           <CardTitle>
@@ -75,23 +52,23 @@ const GroupCard = ({ content_type, content }: CustomCard) => {
           </CardTitle>
         </CardHeader>
         <CardContent>{content.name}</CardContent>
-        {groupHover && isAdmin && (
-          <div className=' mb-7 ' onClick={handleViewMembersClick}>
-            <ConfirmDeleteModal handleConfirmDelete={handleConfirmDelete} />
-          </div>
-        )}
       </Card>
     );
   }
 
   if (content_type === 'file') {
+    const handleConfirmDelete = () => console.log('clicked');
+
     const handleDownload = async (id: any) => {
       try {
         const response: any = await downloadBlob(id);
-        console.log(decodeURIComponent(response?.message));
-        new JsFileDownloader({
-          url: response?.message,
-        }).catch((error: any) => [toast.error('An error occurred')]);
+        setTimeout(() => {
+          new JsFileDownloader({
+            url: response?.message,
+          }).catch((error: any) => {
+            toast.error('An error occurred');
+          });
+        }, 2000);
       } catch (error) {
         console.error('Error downloading file:', error);
       }
@@ -102,41 +79,48 @@ const GroupCard = ({ content_type, content }: CustomCard) => {
         ? `${content.content_name.substring(0, 15)}...`
         : content.content_name;
     return (
-      <>
-        <Card
-          style={{
-            cursor: 'pointer',
-          }}
-          className={`hover:shadow-md transition-all duration-200 ${
-            resolvedTheme === 'dark' ? 'hover:shadow-slate-50' : ''
-          }`}
-        >
-          <CardHeader>
-            <CardTitle className='relative'>
-              <IconFile width={50} height={50} stroke={1} className='mx-auto' />
-            </CardTitle>
-          </CardHeader>
-          <CardContent className='relative'>
-            {truncatedName}
-            <div className='absolute top-0 right-4'>
-              <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <IconDotsVertical width={25} height={25} stroke={1} />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem
-                    onClick={() => handleDownload(content.content_id)}
-                  >
-                    Download
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>Delete</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </CardContent>
-        </Card>
-      </>
+      <Card
+        style={{
+          cursor: 'pointer',
+        }}
+        className={`hover:shadow-md transition-all duration-200 ${
+          resolvedTheme === 'dark' ? 'hover:shadow-slate-50' : ''
+        }`}
+      >
+        <CardHeader>
+          <CardTitle className='relative'>
+            <IconFile width={50} height={50} stroke={1} className='mx-auto' />
+          </CardTitle>
+        </CardHeader>
+        <CardContent className='relative'>
+          {truncatedName}
+          <div className='absolute top-0 right-4'>
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <IconDotsVertical width={25} height={25} stroke={1} />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem
+                  onClick={() => handleDownload(content.content_id)}
+                >
+                  Download
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={(e: any) => {
+                    e.preventDefault();
+                  }}
+                >
+                  <ConfirmDeleteModal
+                    handleConfirmDelete={handleConfirmDelete}
+                    menu={true}
+                  />
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </CardContent>
+      </Card>
     );
   }
 
@@ -148,36 +132,22 @@ const GroupCard = ({ content_type, content }: CustomCard) => {
     };
 
     return (
-      <>
-        <Card
-          style={{
-            cursor: 'pointer',
-          }}
-          onClick={handleClick}
-          className={`hover:shadow-md transition-all duration-200 ${
-            resolvedTheme === 'dark' ? 'hover:shadow-slate-50' : ''
-          }`}
-        >
-          <CardHeader>
-            <CardTitle className='relative'>
-              <IconFile width={50} height={50} stroke={1} className='mx-auto' />
-            </CardTitle>
-          </CardHeader>
-          <CardContent className='relative'>
-            {content.content_name}
-            <div className='absolute top-0 right-4'>
-              <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <IconDotsVertical width={25} height={25} stroke={1} />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem>Delete</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </CardContent>
-        </Card>
-      </>
+      <Card
+        style={{
+          cursor: 'pointer',
+        }}
+        onClick={handleClick}
+        className={`hover:shadow-md transition-all duration-200 ${
+          resolvedTheme === 'dark' ? 'hover:shadow-slate-50' : ''
+        }`}
+      >
+        <CardHeader>
+          <CardTitle className='relative'>
+            <IconFile width={50} height={50} stroke={1} className='mx-auto' />
+          </CardTitle>
+        </CardHeader>
+        <CardContent>{content.content_name}</CardContent>
+      </Card>
     );
   }
 };

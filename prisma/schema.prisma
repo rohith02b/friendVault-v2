@@ -34,3 +34,12 @@ model content {
   content_mimetype String
   uploaded Boolean
 }
+
+model requests {
+  id String @unique
+  user_id String
+  admin String
+  to_join_groupId String
+  to_join_groupName String
+  status String
+}

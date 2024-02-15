@@ -23,8 +23,8 @@ import {
 } from '@/components/ui/drawer';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { createGroup } from '@/app/actions';
-import { useFormState, useFormStatus } from 'react-dom';
+import { createGroup } from '@/app/actions/groups/createGroup.action';
+import { useFormState } from 'react-dom';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 

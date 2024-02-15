@@ -22,8 +22,12 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { User } from 'lucide-react';
+import { getSession } from 'next-auth/react';
 
-export function CreateFolder() {
+export function Settings({ user }: any) {
   const [open, setOpen] = React.useState(false);
   const [isDesktop, setIsDesktop] = React.useState<boolean | undefined>();
 
@@ -49,16 +53,24 @@ export function CreateFolder() {
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button>Create Folder</Button>
+          <div
+            className='flex mt-2 items-center  py-2 pl-2'
+            style={{
+              cursor: 'pointer',
+            }}
+          >
+            <User className='mr-2 h-4 w-4' />
+            <p>Settings</p>
+          </div>
         </DialogTrigger>
         <DialogContent className='sm:max-w-[425px]'>
           <DialogHeader>
-            <DialogTitle>Create Folder</DialogTitle>
+            <DialogTitle>Edit profile</DialogTitle>
             <DialogDescription>
-              Create a folder in the current direcotory
+              Make changes to your profile here. Click save when you're done.
             </DialogDescription>
           </DialogHeader>
-          <ProfileForm />
+          <ProfileForm user={user} />
         </DialogContent>
       </Dialog>
     );
@@ -67,16 +79,24 @@ export function CreateFolder() {
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
-        <Button>Create Folder</Button>
+        <div
+          className='flex mt-2 items-center py-2 pl-2'
+          style={{
+            cursor: 'pointer',
+          }}
+        >
+          <User className='mr-2 h-4 w-4' />
+          <p>Settings</p>
+        </div>
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className='text-left'>
           <DrawerTitle>Edit profile</DrawerTitle>
           <DrawerDescription>
-            Create a folder in the current direcotory
+            Make changes to your profile here. Click save when you're done.
           </DrawerDescription>
         </DrawerHeader>
-        <ProfileForm className='px-4' />
+        <ProfileForm user={user} className='px-4' />
         <DrawerFooter className='pt-2'>
           <DrawerClose asChild>
             <Button variant='outline'>Cancel</Button>
@@ -87,12 +107,23 @@ export function CreateFolder() {
   );
 }
 
-function ProfileForm({ className }: any) {
+function ProfileForm({ className, user }: React.ComponentProps<'form'> | any) {
+  console.log(user);
   return (
-    <div className={cn('grid items-start gap-4', className)}>
-      <div className='grid gap-2'></div>
-    </div>
+    <form className={cn('grid items-start gap-4', className)}>
+      <div className='grid gap-2'>
+        <Label htmlFor='name'>Name</Label>
+        <Input type='text' id='name' defaultValue={user?.name} />
+      </div>
+      {!user?.image && (
+        <div className='grid gap-2'>
+          <Label htmlFor='picture'>Picture</Label>
+          <Input id='picture' type='file' />
+        </div>
+      )}
+      <Button type='submit'>Save changes</Button>
+    </form>
   );
 }
 
-export default CreateFolder;
+export default Settings;

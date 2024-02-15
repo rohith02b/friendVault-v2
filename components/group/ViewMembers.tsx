@@ -13,10 +13,12 @@ import Heading3 from '../ui/heading3';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { IconUserCircle } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
-import { getMembers } from '@/app/actions';
+import { getMembers } from '@/app/actions/groups/getMembers.action';
+import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 
 export function ViewMembers({ groupId }: any) {
   const [members, setMembers] = useState<any>();
+  const [deleteGroup, setDelete] = useState(false);
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -32,43 +34,52 @@ export function ViewMembers({ groupId }: any) {
     fetchMembers();
   }, []);
 
+  const handleConfirmDelete = () => {};
+
   return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button variant='default'>View Members</Button>
-      </SheetTrigger>
-      <SheetContent>
-        <SheetHeader>
-          <SheetTitle>All members present in the group</SheetTitle>
-          <SheetDescription>
-            Only admins can add or remove members
-          </SheetDescription>
-        </SheetHeader>
-        <div className='grid gap-4 py-4'>
-          {members?.map((member: any) => {
-            return (
-              <div
-                key={member.name}
-                className='flex flex-row gap-3 items-center mt-3'
-              >
-                <Avatar>
-                  <AvatarImage src={member.image} />
-                  <AvatarFallback>
-                    <IconUserCircle
-                      width={32}
-                      height={32}
-                      stroke={1}
-                      className='rounded-full cursor-pointer'
-                    />
-                  </AvatarFallback>
-                </Avatar>
-                <Heading3 content={member.name} />
-              </div>
-            );
-          })}
-        </div>
-      </SheetContent>
-    </Sheet>
+    <>
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button variant='default'>View Members</Button>
+        </SheetTrigger>
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle>All members present in the group</SheetTitle>
+            <SheetDescription>
+              Only admins can add or remove members
+            </SheetDescription>
+          </SheetHeader>
+          <div className='flex flex-col gap-4 py-4 max-h-[70vh]'>
+            {members?.map((member: any) => {
+              return (
+                <div
+                  key={member.name}
+                  className='flex flex-row gap-3 items-center mt-3'
+                >
+                  <Avatar>
+                    <AvatarImage src={member.image} />
+                    <AvatarFallback>
+                      <IconUserCircle
+                        width={32}
+                        height={32}
+                        stroke={1}
+                        className='rounded-full cursor-pointer'
+                      />
+                    </AvatarFallback>
+                  </Avatar>
+                  <Heading3 content={member.name} />
+                </div>
+              );
+            })}
+          </div>
+          <div className='mt-12 text-center'>
+            <div onClick={() => setDelete(true)}>
+              <ConfirmDeleteModal handleConfirmDelete={handleConfirmDelete} />
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
+    </>
   );
 }
 

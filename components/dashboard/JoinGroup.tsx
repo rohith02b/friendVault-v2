@@ -24,7 +24,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { joinGroup } from '@/app/actions';
+import { joinGroup } from '@/app/actions/groups/joinGroup.action';
 import { useFormState } from 'react-dom';
 import { Loader2 } from 'lucide-react';
 

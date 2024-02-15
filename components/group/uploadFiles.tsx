@@ -24,9 +24,9 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useFormState } from 'react-dom';
-import { getUrl } from '@/app/actions';
+import { getUrl } from '@/app/actions/files/upload.action';
 import { toast } from 'sonner';
-import { UpdateContent } from '@/app/actions';
+import { UpdateContent } from '@/app/actions/files/uploadToDb.action';
 import { CheckCircle, Loader2, XCircle } from 'lucide-react';
 import uniqId from 'generate-unique-id';
 

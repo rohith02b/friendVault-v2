@@ -7,6 +7,8 @@ import { IconUserCircle } from '@tabler/icons-react';
 import { getServerSession } from 'next-auth';
 import LogoutButton from '../common/LogoutButton';
 import ViewMembers from '../group/ViewMembers';
+import ProfileIcon from '../dashboard/ProfileIcon';
+import Notifications from '../dashboard/Notifications';
 
 export default async function DashboardLayout({
   option,
@@ -22,26 +24,14 @@ export default async function DashboardLayout({
         <div className='w-full xl:max-w-[1500px] mx-auto px-6'>
           <div className='my-6 flex flex-row gap-6  gap-0 justify-between'>
             <div className='flex gap-4 items-center'>
-              {user?.image ? (
-                <Image
-                  src={user?.image || ''}
-                  width={32}
-                  height={32}
-                  alt={user?.name || ''}
-                  className='rounded-full cursor-pointer'
-                />
-              ) : (
-                <IconUserCircle
-                  width={32}
-                  height={32}
-                  stroke={1}
-                  className='rounded-full cursor-pointer'
-                />
-              )}
+              <ProfileIcon user={user} />
               <div>{user?.name}</div>
             </div>
             {option === 'logout' ? (
-              <LogoutButton />
+              <div className='flex flex-row gap-8 items-center'>
+                <Notifications />
+                <LogoutButton />
+              </div>
             ) : (
               <ViewMembers groupId={groupId} />
             )}

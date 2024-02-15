@@ -25,7 +25,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useFormState } from 'react-dom';
-import { createFolder } from '@/app/actions';
+import { createFolder } from '@/app/actions/files/createFolder.action';
 import { toast } from 'sonner';
 
 export function CreateFolder({ groupId, path }: any) {
