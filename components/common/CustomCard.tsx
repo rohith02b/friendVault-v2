@@ -21,43 +21,52 @@ import { downloadBlob } from '@/app/actions/files/downloadFile.action';
 import JsFileDownloader from 'js-file-downloader';
 import { toast } from 'sonner';
 import ConfirmDeleteModal from './ConfirmDeleteModal';
+import deleteBlob from '@/app/actions/files/deleteFile.action';
 
 const GroupCard = ({ content_type, content }: CustomCard) => {
   const router = useRouter();
   const { resolvedTheme } = useTheme();
 
   if (content_type === 'group') {
-    const handleGroupClick = () => {
-      router.push(`/groups/${content.id}`);
-    };
-
     return (
-      <Card
-        style={{
-          cursor: 'pointer',
-        }}
-        onClick={handleGroupClick}
-        className={`hover:shadow-md transition-all duration-200 ${
-          resolvedTheme === 'dark' ? 'hover:shadow-slate-50' : ''
-        }`}
-      >
-        <CardHeader>
-          <CardTitle>
-            <IconUsersGroup
-              width={50}
-              height={50}
-              stroke={1}
-              className='mx-auto'
-            />
-          </CardTitle>
-        </CardHeader>
-        <CardContent>{content.name}</CardContent>
-      </Card>
+      <Link href={`/groups/${content.id}`}>
+        <Card
+          style={{
+            cursor: 'pointer',
+          }}
+          className={`hover:shadow-md transition-all duration-200 ${
+            resolvedTheme === 'dark' ? 'hover:shadow-slate-50' : ''
+          }`}
+        >
+          <CardHeader>
+            <CardTitle>
+              <IconUsersGroup
+                width={50}
+                height={50}
+                stroke={1}
+                className='mx-auto'
+              />
+            </CardTitle>
+          </CardHeader>
+          <CardContent>{content.name}</CardContent>
+        </Card>
+      </Link>
     );
   }
 
   if (content_type === 'file') {
-    const handleConfirmDelete = () => console.log('clicked');
+    const handleConfirmDelete = async () => {
+      await deleteBlob(content?.content_id).then(
+        (response: boolean | undefined) => {
+          console.log(response);
+          if (response) {
+            toast.success('Successfully deleted');
+          } else {
+            toast.error('An error occurred');
+          }
+        }
+      );
+    };
 
     const handleDownload = async (id: any) => {
       try {

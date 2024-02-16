@@ -10,7 +10,7 @@ export async function getMembers(groupId: string) {
       },
       select: {
         id: false,
-        owner: false,
+        owner: true,
         code: false,
         name: false,
         members: true,
@@ -32,7 +32,7 @@ export async function getMembers(groupId: string) {
         });
       });
 
-      return membersArr;
+      return { members: membersArr, owner: response?.owner };
     }
   } catch (error) {
     return []; // Return an empty array in case of error

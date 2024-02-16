@@ -135,6 +135,10 @@ function ProfileForm({ className, setOpen, createGroup }: any) {
       <div className='grid gap-2'>
         <Label htmlFor='connectionString'>Connection String </Label>
         <Input type='text' id='connectionString' name='connectionString' />
+        <p className='text-sm text-muted-foreground'>
+          The azure connection string which will be encrypted to store the files
+          in your azure account
+        </p>
       </div>
       <Button type='submit' onClick={handleClick}>
         {loading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}

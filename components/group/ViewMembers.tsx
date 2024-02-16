@@ -15,26 +15,46 @@ import { IconUserCircle } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { getMembers } from '@/app/actions/groups/getMembers.action';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
+import { getSession } from 'next-auth/react';
+import { Skeleton } from '../ui/skeleton';
+import { deleteGroup } from '@/app/actions/groups/deleteGroup.action';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 export function ViewMembers({ groupId }: any) {
   const [members, setMembers] = useState<any>();
-  const [deleteGroup, setDelete] = useState(false);
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
-    const fetchMembers = async () => {
-      await getMembers(groupId)
-        .then((response: any) => {
-          setMembers(response);
-        })
-        .catch((error: any) => {
-          console.error(error);
-        });
+    const fetchData = async () => {
+      try {
+        const session = await getSession();
+        if (session) {
+          const response: any = await getMembers(groupId);
+          setMembers(response?.members);
+          setIsAdmin(session.user?.email === response?.owner);
+          setLoading(false);
+        }
+      } catch (error) {
+        setLoading(false);
+      }
     };
 
-    fetchMembers();
-  }, []);
+    fetchData();
+  }, [groupId]);
 
-  const handleConfirmDelete = () => {};
+  const handleConfirmDelete = async () => {
+    await deleteGroup(groupId).then((response: boolean) => {
+      if (response) {
+        router.push('/dashboard');
+        toast.success('Deleted Group');
+      } else {
+        toast.error('Could not delete the group');
+      }
+    });
+  };
 
   return (
     <>
@@ -50,33 +70,45 @@ export function ViewMembers({ groupId }: any) {
             </SheetDescription>
           </SheetHeader>
           <div className='flex flex-col gap-4 py-4 max-h-[70vh]'>
-            {members?.map((member: any) => {
-              return (
-                <div
-                  key={member.name}
-                  className='flex flex-row gap-3 items-center mt-3'
-                >
-                  <Avatar>
-                    <AvatarImage src={member.image} />
-                    <AvatarFallback>
-                      <IconUserCircle
-                        width={32}
-                        height={32}
-                        stroke={1}
-                        className='rounded-full cursor-pointer'
-                      />
-                    </AvatarFallback>
-                  </Avatar>
-                  <Heading3 content={member.name} />
-                </div>
-              );
-            })}
+            {loading
+              ? [1, 2, 3].map((each: number) => {
+                  return (
+                    <div
+                      key={each}
+                      className='flex flex-row gap-3 items-center mt-3'
+                    >
+                      <Skeleton className='w-8 h-8 rounded-full' />
+                      <Skeleton className='w-64 h-6 rounded-md' />
+                    </div>
+                  );
+                })
+              : members?.map((member: any) => {
+                  return (
+                    <div
+                      key={member.image}
+                      className='flex flex-row gap-3 items-center mt-3'
+                    >
+                      <Avatar>
+                        <AvatarImage src={member.image} />
+                        <AvatarFallback>
+                          <IconUserCircle
+                            width={32}
+                            height={32}
+                            stroke={1}
+                            className='rounded-full cursor-pointer'
+                          />
+                        </AvatarFallback>
+                      </Avatar>
+                      <Heading3 content={member.name} />
+                    </div>
+                  );
+                })}
           </div>
-          <div className='mt-12 text-center'>
-            <div onClick={() => setDelete(true)}>
+          {isAdmin && (
+            <div className='mt-12 text-center'>
               <ConfirmDeleteModal handleConfirmDelete={handleConfirmDelete} />
             </div>
-          </div>
+          )}
         </SheetContent>
       </Sheet>
     </>
