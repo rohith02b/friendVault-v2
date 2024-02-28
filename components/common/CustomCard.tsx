@@ -34,7 +34,7 @@ const GroupCard = ({ content_type, content }: CustomCard) => {
           style={{
             cursor: 'pointer',
           }}
-          className={`hover:shadow-md transition-all duration-200 ${
+          className={`hover:shadow-md transition-all duration-200 hover:py-4 ${
             resolvedTheme === 'dark' ? 'hover:shadow-slate-50' : ''
           }`}
         >

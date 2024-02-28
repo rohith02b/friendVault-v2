@@ -29,7 +29,7 @@ export default async function DashboardLayout({
             </div>
             {option === 'logout' ? (
               <div className='flex flex-row gap-8 items-center'>
-                <Notifications />
+                {/* <Notifications /> */}
                 <LogoutButton />
               </div>
             ) : (

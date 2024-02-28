@@ -46,7 +46,7 @@ export function ViewMembers({ groupId }: any) {
   }, [groupId]);
 
   const handleConfirmDelete = async () => {
-    await deleteGroup(groupId).then((response: boolean) => {
+    await deleteGroup(groupId).then((response: any) => {
       if (response) {
         router.push('/dashboard');
         toast.success('Deleted Group');

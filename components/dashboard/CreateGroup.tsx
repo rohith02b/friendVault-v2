@@ -132,14 +132,14 @@ function ProfileForm({ className, setOpen, createGroup }: any) {
         <Label htmlFor='code'>Code*</Label>
         <Input type='text' id='code' name='code' required />
       </div>
-      <div className='grid gap-2'>
+      {/* <div className='grid gap-2'>
         <Label htmlFor='connectionString'>Connection String </Label>
         <Input type='text' id='connectionString' name='connectionString' />
         <p className='text-sm text-muted-foreground'>
           The azure connection string which will be encrypted to store the files
           in your azure account
         </p>
-      </div>
+      </div> */}
       <Button type='submit' onClick={handleClick}>
         {loading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
         {loading ? 'Saving changes' : 'Save changes'}

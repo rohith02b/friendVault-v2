@@ -8,38 +8,33 @@ datasource db {
 }
 
 model users {
-  id  String @unique
-  name String
-  email String @unique
+  id     String @id @unique
+  name   String
+  email  String @unique
   password String
-  image String?
+  image   String?
   provider String?
+  Group groups[]
 }
 
 model groups {
-  id String @unique
-  owner String
-  code String @unique
-  name String
-  members String[] 
+  id        String @id @unique
+  author    users @relation(fields: [owner], references: [email], onDelete: Cascade)
+  owner     String
+  code      String @unique
+  name      String
+  members   String[]
+  Content   content[]
 }
 
 model content {
-  content_id String @unique
-  group_id String
-  url String 
-  path String 
+  content_id  String @id @unique
+  author      groups @relation(fields: [group_id], references: [id],onDelete: Cascade)
+  group_id     String
+  url         String
+  path         String
   content_name String
   content_type String
   content_mimetype String
-  uploaded Boolean
-}
-
-model requests {
-  id String @unique
-  user_id String
-  admin String
-  to_join_groupId String
-  to_join_groupName String
-  status String
+  uploaded     Boolean
 }
