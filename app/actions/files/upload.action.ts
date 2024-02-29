@@ -3,10 +3,7 @@
 import prisma from '@/lib/prisma';
 import { BlobServiceClient, BlobSASPermissions } from '@azure/storage-blob';
 
-export async function getUrl(
-  prevState: { message: string },
-  formData: FormData
-) {
+export async function getUrl(groupId: string) {
   try {
     const connectionString = process.env.CONNECTION_STRING;
     if (!connectionString) {
@@ -14,13 +11,13 @@ export async function getUrl(
     }
     const blobServiceClient =
       BlobServiceClient.fromConnectionString(connectionString);
-    const container = process.env.CONTAINER;
+    const container = groupId;
     if (!container) {
       throw 'Could not generate SAS token';
     }
     const containerClient = blobServiceClient.getContainerClient(container);
     const expiryTime = new Date();
-    expiryTime.setHours(expiryTime.getMinutes() + 10);
+    expiryTime.setMinutes(expiryTime.getMinutes() + 10);
 
     const sasOptions: any = {
       startsOn: new Date(),
@@ -29,8 +26,9 @@ export async function getUrl(
     };
 
     const sasToken = await containerClient.generateSasUrl(sasOptions);
-    return { message: sasToken };
+    return sasToken;
   } catch (error) {
-    return { messagge: error };
+    console.log(error);
+    return error;
   }
 }

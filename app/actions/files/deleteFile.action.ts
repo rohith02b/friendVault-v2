@@ -16,7 +16,7 @@ const deleteBlob = async (id: string) => {
 
   try {
     const connectionString = process.env.CONNECTION_STRING;
-    const containerName = process.env.CONTAINER;
+    const containerName = blobDetails.group_id;
     if (connectionString && containerName) {
       let url = blobDetails.url.split('/');
       let blobName = url[url.length - 1];
@@ -24,10 +24,14 @@ const deleteBlob = async (id: string) => {
         BlobServiceClient.fromConnectionString(connectionString);
       const containerClient =
         blobServiceClient.getContainerClient(containerName);
-      const path = blobDetails?.path === '/' ? '' : blobDetails?.path;
-      const blobClient = containerClient.getBlobClient(
-        `${blobDetails.group_id}${path}/${blobName}`
-      );
+      let path = '';
+
+      if (blobDetails?.path === '/') path = '';
+      else {
+        let newPath = blobDetails?.path.slice(1);
+        path = newPath + '/';
+      }
+      const blobClient = containerClient.getBlobClient(`${path}${blobName}`);
       const response = await blobClient.deleteIfExists();
       if (response.succeeded) {
         await prisma.content.delete({
@@ -42,6 +46,7 @@ const deleteBlob = async (id: string) => {
       }
     }
   } catch (error: any) {
+    console.log(error);
     return false;
   }
 };

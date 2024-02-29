@@ -9,7 +9,7 @@ import { Loader2, Router } from 'lucide-react';
 import { IconBrandGoogle } from '@tabler/icons-react';
 import { signIn } from 'next-auth/react';
 import { toast } from 'sonner';
-import { Toaster } from '@/components/ui/sonner';
+import { Toaster } from 'sonner';
 import { useRouter } from 'next/navigation';
 
 const RegisterForm = () => {

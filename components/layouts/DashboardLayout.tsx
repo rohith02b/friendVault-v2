@@ -1,14 +1,9 @@
-import Link from 'next/link';
 import ChangeTheme from '../common/changeTheme';
-import { Toaster } from '../ui/sonner';
-import { Button } from '../ui/button';
-import Image from 'next/image';
-import { IconUserCircle } from '@tabler/icons-react';
+import { Toaster } from 'sonner';
 import { getServerSession } from 'next-auth';
 import LogoutButton from '../common/LogoutButton';
 import ViewMembers from '../group/ViewMembers';
 import ProfileIcon from '../dashboard/ProfileIcon';
-import Notifications from '../dashboard/Notifications';
 
 export default async function DashboardLayout({
   option,

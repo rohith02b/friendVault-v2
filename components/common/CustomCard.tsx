@@ -58,7 +58,6 @@ const GroupCard = ({ content_type, content }: CustomCard) => {
     const handleConfirmDelete = async () => {
       await deleteBlob(content?.content_id).then(
         (response: boolean | undefined) => {
-          console.log(response);
           if (response) {
             toast.success('Successfully deleted');
           } else {
@@ -71,13 +70,11 @@ const GroupCard = ({ content_type, content }: CustomCard) => {
     const handleDownload = async (id: any) => {
       try {
         const response: any = await downloadBlob(id);
-        setTimeout(() => {
-          new JsFileDownloader({
-            url: response?.message,
-          }).catch((error: any) => {
-            toast.error('An error occurred');
-          });
-        }, 2000);
+        new JsFileDownloader({
+          url: response?.message,
+        }).catch((error: any) => {
+          toast.error('An error occurred');
+        });
       } catch (error) {
         console.error('Error downloading file:', error);
       }
@@ -152,7 +149,7 @@ const GroupCard = ({ content_type, content }: CustomCard) => {
       >
         <CardHeader>
           <CardTitle className='relative'>
-            <IconFile width={50} height={50} stroke={1} className='mx-auto' />
+            <IconFolder width={50} height={50} stroke={1} className='mx-auto' />
           </CardTitle>
         </CardHeader>
         <CardContent>{content.content_name}</CardContent>

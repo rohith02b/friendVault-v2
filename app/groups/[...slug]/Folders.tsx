@@ -9,7 +9,7 @@ import CreateFolder from '@/components/group/createFolder';
 const Folders = async ({ groupId, path }: any) => {
   const folders = await prisma.content.findMany({
     where: {
-      group_id: groupId || '',
+      group_id: groupId,
       path: `/${path}`,
       content_type: 'folder',
     },

@@ -16,7 +16,7 @@ export async function downloadBlob(id: string) {
     }
     const blobServiceClient =
       BlobServiceClient.fromConnectionString(connectionString);
-    const container = process.env.CONTAINER;
+    const container = data?.group_id;
     if (!container) {
       throw 'Could not generate SAS token';
     }
@@ -35,9 +35,13 @@ export async function downloadBlob(id: string) {
       permissions: BlobSASPermissions.parse('r'),
     };
 
-    const filePath = `${data?.group_id}${
-      data?.path === '/' ? '' : data?.path
-    }/${decodedFileName}`;
+    let filePath = '';
+    if (data?.path === '/') filePath = `${decodedFileName}`;
+    else {
+      let path = data?.path?.slice(1);
+      filePath = `${path}/${decodedFileName}`;
+    }
+
     const blobClient = containerClient.getBlobClient(filePath);
     const sasToken = await blobClient.generateSasUrl(sasOptions);
     return { message: sasToken };

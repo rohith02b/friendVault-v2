@@ -23,13 +23,11 @@ import {
 } from '@/components/ui/drawer';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useFormState } from 'react-dom';
 import { getUrl } from '@/app/actions/files/upload.action';
 import { toast } from 'sonner';
 import { UpdateContent } from '@/app/actions/files/uploadToDb.action';
 import { CheckCircle, Loader2, XCircle } from 'lucide-react';
 import uniqId from 'generate-unique-id';
-import axios from 'axios';
 
 export function UploadFiles({ groupId, path }: any) {
   const [open, setOpen] = React.useState(false);
@@ -122,20 +120,16 @@ function ProfileForm({
   groupId,
   path,
 }: any) {
-  const initialState = {
-    message: '',
-  };
-  const [state, formAction] = useFormState(getUrl, initialState);
   const [selectedFiles, setSelectedFiles] = React.useState<any>();
   const [uploading, setUploading] = React.useState(false);
-  const [progress, setProgress] = React.useState(0); // State to store progress percentage
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
+      // Convert FileList to array and add upload status
       const filesArray: any[] = Array.from(files).map((file: any) => ({
         file,
-        status: 'uploading',
+        status: 'uploading', // Initial status is pending
       }));
       setSelectedFiles(filesArray);
     }
@@ -149,22 +143,42 @@ function ProfileForm({
         const id = uniqId();
         let name = file.name.split('.');
 
-        let url = `${urlArr[0]}/${groupId}/${path ? path + '/' : ''}${
-          name[0]
-        }-${id}.${name[1]}?${urlArr[1]}`;
+        let url = `${urlArr[0]}/${path ? path + '/' : ''}${name[0]}-${id}.${
+          name[1]
+        }?${urlArr[1]}`;
+        // Update status to 'uploading'
         fileData.status = 'uploading';
         setSelectedFiles([...selectedFiles]);
 
-        const response: any = await axios.post('/api/uploadFile', file, {
-          onUploadProgress: (progressEvent: any) => {
-            const progressPercentage = Math.round(
-              (progressEvent.loaded / progressEvent.total) * 100
-            );
-            setProgress(progressPercentage); // Update progress percentage
+        // Perform the actual file upload to Azure Blob Storage
+        const response = await fetch(url, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': file.type,
+            'x-ms-blob-type': 'BlockBlob',
           },
+          body: file,
         });
 
-        fileData.status = 'uploaded';
+        // Check if the upload was successful (you may need to customize this based on your Azure setup)
+        if (response.ok) {
+          let url = response.url.split('?');
+          fileData.status = 'uploaded';
+          UpdateContent({
+            content_id: uniqId(),
+            group_id: groupId,
+            url: url[0],
+            path: `/${path}`,
+            content_name: file.name,
+            content_type: 'file',
+            content_mimetype: file.type,
+            uploaded: true,
+          });
+        } else {
+          fileData.status = 'error';
+          toast.error(`Could not upload file ${file.name}`);
+        }
+
         setSelectedFiles([...selectedFiles]);
       }
 
@@ -181,23 +195,12 @@ function ProfileForm({
   };
 
   React.useEffect(() => {
-    if (!state.message) {
-    } else if (state.message === 'Could not generate SAS token') {
-      setOpen(false);
-      toast.error(state.message);
-    } else {
-      setUploading(true);
-      uploadToAzure(state.message);
-    }
-  }, [state]);
-
-  React.useEffect(() => {
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
       if (uploading) {
         const message =
           'You have uploads in progress. Are you sure you want to leave?';
-        event.returnValue = message;
-        return message;
+        event.returnValue = message; // Standard for most browsers
+        return message; // For some older browsers
       }
     };
 
@@ -208,11 +211,14 @@ function ProfileForm({
     };
   }, [uploading]);
 
+  const handleSubmit = async () => {
+    setUploading(true);
+    const url = await getUrl(groupId);
+    uploadToAzure(url);
+  };
+
   return (
-    <form
-      className={cn('grid items-start gap-4', className)}
-      action={formAction}
-    >
+    <div className={cn('grid items-start gap-4', className)}>
       <div className='grid gap-2'>
         <Label htmlFor='files'>Upload files </Label>
         <Input
@@ -233,20 +239,21 @@ function ProfileForm({
                 key={index}
                 className='flex flex-row gap-5 items-center mt-2'
               >
-                <p>
-                  {each.status === 'uploading' ? (
-                    progress + '%'
-                  ) : (
-                    <CheckCircle className='text-green-500 inline mr-4' />
-                  )}
-                  {each.file.name}
-                </p>
+                {each.status === 'uploading' ? (
+                  <Loader2 className='animate-spin' />
+                ) : each.status === 'uploaded' ? (
+                  <CheckCircle className='text-green-500' />
+                ) : (
+                  <XCircle className='text-red-500' />
+                )}
+                <p>{each.file.name}</p>
               </div>
             );
           })}
         </div>
       ) : null}
-      <Button type='submit' disabled={uploading}>
+      <Button disabled={uploading} onClick={handleSubmit}>
+        {uploading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
         {uploading ? 'Uploading' : 'Upload'}
       </Button>
       {!uploading && (
@@ -254,7 +261,7 @@ function ProfileForm({
           Close
         </Button>
       )}
-    </form>
+    </div>
   );
 }
 

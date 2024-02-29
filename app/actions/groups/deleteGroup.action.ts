@@ -2,6 +2,7 @@
 
 import prisma from '@/lib/prisma';
 import { BlobServiceClient } from '@azure/storage-blob';
+import { getServerSession } from 'next-auth';
 import { revalidatePath } from 'next/cache';
 
 export async function deleteGroup(groupId: string) {
@@ -12,6 +13,11 @@ export async function deleteGroup(groupId: string) {
         id: groupId,
       },
     });
+
+    const user = await getServerSession();
+    if (user?.user?.email !== response?.owner) {
+      return false;
+    }
 
     // group exists
     if (response && connectionString) {

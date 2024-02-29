@@ -108,19 +108,12 @@ export function Settings({ user }: any) {
 }
 
 function ProfileForm({ className, user }: React.ComponentProps<'form'> | any) {
-  console.log(user);
   return (
     <form className={cn('grid items-start gap-4', className)}>
       <div className='grid gap-2'>
         <Label htmlFor='name'>Name</Label>
         <Input type='text' id='name' defaultValue={user?.name} />
       </div>
-      {!user?.image && (
-        <div className='grid gap-2'>
-          <Label htmlFor='picture'>Picture</Label>
-          <Input id='picture' type='file' />
-        </div>
-      )}
       <Button type='submit'>Save changes</Button>
     </form>
   );
