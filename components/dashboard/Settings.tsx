@@ -67,7 +67,7 @@ export function Settings({ user }: any) {
           <DialogHeader>
             <DialogTitle>Edit profile</DialogTitle>
             <DialogDescription>
-              Make changes to your profile here. Click save when you're done.
+              Make changes to your profile here. Click save when done.
             </DialogDescription>
           </DialogHeader>
           <ProfileForm user={user} />
@@ -93,7 +93,7 @@ export function Settings({ user }: any) {
         <DrawerHeader className='text-left'>
           <DrawerTitle>Edit profile</DrawerTitle>
           <DrawerDescription>
-            Make changes to your profile here. Click save when you're done.
+            Make changes to your profile here. Click save when done.
           </DrawerDescription>
         </DrawerHeader>
         <ProfileForm user={user} className='px-4' />

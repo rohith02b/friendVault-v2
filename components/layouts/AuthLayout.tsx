@@ -1,7 +1,6 @@
 import ChangeTheme from '@/components/common/changeTheme';
 import Link from 'next/link';
 import { Button } from '../ui/button';
-import TopLoader from '../common/TopLoader';
 
 export default async function LandingLayout({ children, pageToRedirect }: any) {
   return (
