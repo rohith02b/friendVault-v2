@@ -28,7 +28,6 @@ const LoginForm = () => {
         password,
         redirect: false,
       });
-      console.log(result);
       if (!result?.ok) {
         toast.error(
           'It seems that there may be an issue with either the email or password you entered, or perhaps your email is linked to the Google provider.'
