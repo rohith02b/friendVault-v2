@@ -27,6 +27,7 @@ import { toast } from 'sonner';
 import { joinGroup } from '@/app/actions/groups/joinGroup.action';
 import { useFormState } from 'react-dom';
 import { Loader2 } from 'lucide-react';
+import { useFormik } from 'formik';
 
 export default function JoinGroup() {
   const [open, setOpen] = React.useState(false);
@@ -92,38 +93,43 @@ export default function JoinGroup() {
 }
 
 function ProfileForm({ className, setOpen, joinGroup }: any) {
-  const initialState = {
-    message: '',
-  };
-  const [state, formAction] = useFormState(joinGroup, initialState);
   const [loading, setLoading] = React.useState(false);
-
-  const handleClick = () => {
-    setLoading(true);
-  };
-
-  React.useEffect(() => {
-    if (state.message === 'Successfully joined Group') {
-      setOpen(false);
-      toast.success(state.message);
-    } else if (state.message === 'Group does not exist') {
-      toast.error(state.message);
-    } else if (state.message === 'You are a member of the group') {
-      toast.info(state.message);
-    }
-    setLoading(false);
-  }, [state]);
+  const formik = useFormik({
+    initialValues: {
+      code: '',
+    },
+    onSubmit: async (values) => {
+      if (values.code) {
+        setLoading(true);
+        let data = await joinGroup(values);
+        if (data?.status === 200) {
+          toast.success(data.message);
+          setOpen(false);
+        } else {
+          toast.error(data.message);
+          setLoading(false);
+        }
+      }
+    },
+  });
 
   return (
     <form
       className={cn('grid items-start gap-4', className)}
-      action={formAction}
+      onSubmit={formik.handleSubmit}
     >
       <div className='grid gap-2'>
         <Label htmlFor='code'>Code</Label>
-        <Input type='text' id='code' name='code' required />
+        <Input
+          type='text'
+          id='code'
+          name='code'
+          value={formik.values.code}
+          onChange={formik?.handleChange}
+          required
+        />
       </div>
-      <Button type='submit' onClick={handleClick}>
+      <Button type='submit'>
         {loading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
         {loading ? 'Saving ' : 'Save '}
       </Button>

@@ -27,6 +27,7 @@ import { createGroup } from '@/app/actions/groups/createGroup.action';
 import { useFormState } from 'react-dom';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import { useFormik } from 'formik';
 
 export default function CreateGroup() {
   const [open, setOpen] = React.useState(false);
@@ -99,38 +100,53 @@ export default function CreateGroup() {
 }
 
 function ProfileForm({ className, setOpen, createGroup }: any) {
-  const initialState = {
-    message: '',
-  };
-  const [state, formAction] = useFormState(createGroup, initialState);
   const [loading, setLoading] = React.useState(false);
-
-  const handleClick = () => {
-    setLoading(true);
-  };
-
-  React.useEffect(() => {
-    if (state.message === 'Successfully created Group') {
-      setOpen(false);
-      toast.success(state.message);
-    } else if (state.message === 'Code already exists.') {
-      toast.error(state.message);
-    }
-    setLoading(false);
-  }, [state]);
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+      code: '',
+    },
+    onSubmit: async (values) => {
+      if (values.code && values.name) {
+        setLoading(true);
+        let data = await createGroup(values);
+        if (data?.status === 200) {
+          toast.success(data.message);
+          setOpen(false);
+        } else {
+          toast.error(data.message);
+          setLoading(false);
+        }
+      }
+    },
+  });
 
   return (
     <form
       className={cn('grid items-start gap-4', className)}
-      action={formAction}
+      onSubmit={formik.handleSubmit}
     >
       <div className='grid gap-2'>
         <Label htmlFor='name'>Name*</Label>
-        <Input type='text' id='name' name='name' required />
+        <Input
+          type='text'
+          id='name'
+          name='name'
+          required
+          value={formik.values.name}
+          onChange={formik.handleChange}
+        />
       </div>
       <div className='grid gap-2'>
         <Label htmlFor='code'>Code*</Label>
-        <Input type='text' id='code' name='code' required />
+        <Input
+          type='text'
+          id='code'
+          name='code'
+          required
+          value={formik.values.code}
+          onChange={formik.handleChange}
+        />
       </div>
       {/* <div className='grid gap-2'>
         <Label htmlFor='connectionString'>Connection String </Label>
@@ -140,7 +156,7 @@ function ProfileForm({ className, setOpen, createGroup }: any) {
           in your azure account
         </p>
       </div> */}
-      <Button type='submit' onClick={handleClick}>
+      <Button type='submit'>
         {loading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
         {loading ? 'Saving changes' : 'Save changes'}
       </Button>

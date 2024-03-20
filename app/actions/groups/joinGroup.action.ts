@@ -4,15 +4,9 @@ import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { getServerSession } from 'next-auth';
 
-export async function joinGroup(
-  prevState: {
-    message: string;
-  },
-  formData: FormData
-) {
+export async function joinGroup(data: any) {
   'use server';
-  let code: any = formData.get('code');
-  code = code?.toString();
+  let code: string = data.code;
   const group = await prisma.groups.findUnique({
     where: {
       code: code,
@@ -23,7 +17,7 @@ export async function joinGroup(
     const session = await getServerSession();
 
     if (group.members.includes(session?.user?.email || '')) {
-      return { message: 'You are a member of the group' };
+      return { message: 'You are a member of the group', status: 404 };
     }
 
     await prisma.groups.update({
@@ -37,9 +31,9 @@ export async function joinGroup(
       },
     });
   } else {
-    return { message: 'Group does not exist' };
+    return { message: 'Group does not exist', status: 404 };
   }
 
   revalidatePath('/dashboard');
-  return { message: 'Successfully joined Group' };
+  return { message: 'Successfully joined Group', status: 200 };
 }

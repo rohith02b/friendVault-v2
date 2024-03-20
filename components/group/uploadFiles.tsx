@@ -212,9 +212,11 @@ function ProfileForm({
   }, [uploading]);
 
   const handleSubmit = async () => {
-    setUploading(true);
-    const url = await getUrl(groupId);
-    uploadToAzure(url);
+    if (selectedFiles) {
+      setUploading(true);
+      const url = await getUrl(groupId);
+      uploadToAzure(url);
+    }
   };
 
   return (

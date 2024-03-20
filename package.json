@@ -27,6 +27,7 @@
     "bcrypt": "^5.1.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "formik": "^2.4.5",
     "generate-unique-id": "^2.0.3",
     "jotai": "^2.6.4",
     "js-file-downloader": "^1.1.25",

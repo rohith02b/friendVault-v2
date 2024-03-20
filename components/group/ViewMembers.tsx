@@ -33,6 +33,7 @@ export function ViewMembers({ groupId }: any) {
         const session = await getSession();
         if (session) {
           const response: any = await getMembers(groupId);
+          console.log(response);
           setMembers(response?.members);
           setIsAdmin(session.user?.email === response?.owner);
           setLoading(false);

@@ -23,14 +23,9 @@ async function createContainerWithId(containerId: string) {
   }
 }
 
-export async function createGroup(
-  prevState: {
-    message: string;
-  },
-  formData: FormData
-) {
-  let name: any = formData.get('name');
-  let code: any = formData.get('code');
+export async function createGroup(data: any) {
+  let name: any = data.name;
+  let code: any = data.code;
 
   code = code?.toString();
   name = name?.toString();
@@ -41,7 +36,7 @@ export async function createGroup(
   });
 
   if (codeExists) {
-    return { message: 'Code already exists.' };
+    return { message: 'Code already exists.', status: 409 };
   }
 
   const id = uniqId();
@@ -65,9 +60,9 @@ export async function createGroup(
     // Optionally, trigger cache revalidation or any other necessary operations
     revalidatePath('/dashboard');
 
-    return { message: 'Successfully created Group', containerName };
+    return { message: 'Successfully created Group', status: 200 };
   } catch (error) {
     console.error('Error creating group:', error);
-    return { message: 'Error creating group', error };
+    return { message: 'Error creating group', status: 404 };
   }
 }

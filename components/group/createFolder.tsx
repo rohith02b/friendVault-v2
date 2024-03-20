@@ -112,9 +112,11 @@ function ProfileForm({ className, createFolder, setOpen, groupId, path }: any) {
   const [state, setState] = React.useState<any>();
 
   const handleClick = async () => {
-    setLoading(true);
-    const response = await createFolder(groupId, path, name);
-    setState(response?.message);
+    if (name) {
+      setLoading(true);
+      const response = await createFolder(groupId, path, name);
+      setState(response?.message);
+    }
   };
 
   const handleChange = (e: any) => {
@@ -140,7 +142,7 @@ function ProfileForm({ className, createFolder, setOpen, groupId, path }: any) {
       }}
     >
       <div className='grid gap-2'>
-        <Label htmlFor='email'>Name</Label>
+        <Label htmlFor='email'>Name*</Label>
         <Input
           type='text'
           id='name'

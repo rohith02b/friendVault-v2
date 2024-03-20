@@ -15,6 +15,7 @@ import { useRouter } from 'next/navigation';
 const RegisterForm = () => {
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState('');
+  const [googleLoading, setGLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
@@ -100,11 +101,16 @@ const RegisterForm = () => {
           </div>
         </div>
       </form>
-      <div className='w-full md:w-1/2 gap-4 flex flex-col'>
+      <div className='w-full mt-2 md:w-1/2 gap-4 flex flex-col'>
         <Button
           className='mt-4'
-          onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
+          disabled={googleLoading}
+          onClick={(e: any) => {
+            setGLoading(true);
+            signIn('google', { callbackUrl: '/dashboard' });
+          }}
         >
+          {googleLoading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
           <IconBrandGoogle className='mr-2 h-4 w-4' /> Continue with Google
         </Button>
       </div>

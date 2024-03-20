@@ -14,6 +14,7 @@ import { useRouter } from 'next/navigation';
 
 const LoginForm = () => {
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
@@ -90,8 +91,13 @@ const LoginForm = () => {
       <div className='w-full md:w-1/2 gap-4 flex flex-col'>
         <Button
           className='mt-4'
-          onClick={(e: any) => handleGoogleLogin('google')}
+          disabled={googleLoading}
+          onClick={(e: any) => {
+            setGLoading(true);
+            handleGoogleLogin('google');
+          }}
         >
+          {googleLoading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
           <IconBrandGoogle className='mr-2 h-4 w-4' /> Continue with Google
         </Button>
       </div>
