@@ -6,12 +6,16 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-import { IconFile, IconFolder, IconUsersGroup } from '@tabler/icons-react';
+import {
+  IconProgressX,
+  IconFile,
+  IconFolder,
+  IconUsersGroup,
+} from '@tabler/icons-react';
 import Link from 'next/link';
 import { CustomCard } from '@/types/CustomCard';
 import { useRouter } from 'next/navigation';
@@ -95,10 +99,20 @@ const GroupCard = ({ content_type, content }: CustomCard) => {
       >
         <CardHeader>
           <CardTitle className='relative'>
-            <IconFile width={50} height={50} stroke={1} className='mx-auto' />
+            {content.uploaded ? (
+              <IconFile width={50} height={50} stroke={1} className='mx-auto' />
+            ) : (
+              <IconProgressX
+                width={50}
+                height={50}
+                stroke={1}
+                className='mx-auto text-red-500'
+              />
+            )}
           </CardTitle>
         </CardHeader>
         <CardContent className='relative'>
+          {!content.uploaded && 'Error uploading '}
           {truncatedName}
           <div className='absolute top-0 right-4'>
             <DropdownMenu>
