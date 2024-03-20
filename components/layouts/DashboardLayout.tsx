@@ -4,6 +4,7 @@ import { getServerSession } from 'next-auth';
 import LogoutButton from '../common/LogoutButton';
 import ViewMembers from '../group/ViewMembers';
 import ProfileIcon from '../dashboard/ProfileIcon';
+import { Skeleton } from '../ui/skeleton';
 
 export default async function DashboardLayout({
   option,
@@ -24,11 +25,12 @@ export default async function DashboardLayout({
             </div>
             {option === 'logout' ? (
               <div className='flex flex-row gap-8 items-center'>
-                {/* <Notifications /> */}
                 <LogoutButton />
               </div>
-            ) : (
+            ) : option === 'members' ? (
               <ViewMembers groupId={groupId} />
+            ) : (
+              <Skeleton className='w-36 h-10' />
             )}
           </div>
         </div>
